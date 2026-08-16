@@ -15,3 +15,6 @@ export { CitationBadge } from './CitationBadge';
 export { VerdictCard } from './VerdictCard';
 export { VoiceFAB } from './VoiceFAB';
 export { EmergencyCard } from './EmergencyCard';
+export { TopicCard } from './TopicCard';
+export { InquiryRow } from './InquiryRow';
+export { SettingsRow } from './SettingsRow';

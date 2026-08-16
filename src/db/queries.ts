@@ -21,6 +21,10 @@ function toQAEntry(row: QAEntryRow): QAEntry {
   };
 }
 
+/** QAEntry plus the activity timestamp (saved_at / viewed_at) from the join,
+ * so list rows can show real "2 days ago" style labels. */
+export type QAEntryWithActivity = QAEntry & { activityAt: number };
+
 export async function getTopics(): Promise<TopicRow[]> {
   const db = await getDb();
   return db.getAllAsync<TopicRow>('SELECT * FROM topics ORDER BY sort_order ASC');
@@ -99,14 +103,14 @@ export async function toggleSaved(qaId: string): Promise<boolean> {
   return true;
 }
 
-export async function getSaved(): Promise<QAEntry[]> {
+export async function getSaved(): Promise<QAEntryWithActivity[]> {
   const db = await getDb();
-  const rows = await db.getAllAsync<QAEntryRow>(
-    `SELECT qa_entries.* FROM qa_entries
+  const rows = await db.getAllAsync<QAEntryRow & { activity_at: number }>(
+    `SELECT qa_entries.*, saved.saved_at AS activity_at FROM qa_entries
      JOIN saved ON saved.qa_id = qa_entries.id
      ORDER BY saved.saved_at DESC`
   );
-  return rows.map(toQAEntry);
+  return rows.map((row) => ({ ...toQAEntry(row), activityAt: row.activity_at }));
 }
 
 // ---- Recently viewed (offline-availability signal) ----
@@ -134,16 +138,18 @@ export async function hasBeenViewed(qaId: string): Promise<boolean> {
   return !!row;
 }
 
-export async function getRecentlyViewed(limit = RECENTLY_VIEWED_CAP): Promise<QAEntry[]> {
+export async function getRecentlyViewed(
+  limit = RECENTLY_VIEWED_CAP
+): Promise<QAEntryWithActivity[]> {
   const db = await getDb();
-  const rows = await db.getAllAsync<QAEntryRow>(
-    `SELECT qa_entries.* FROM qa_entries
+  const rows = await db.getAllAsync<QAEntryRow & { activity_at: number }>(
+    `SELECT qa_entries.*, recently_viewed.viewed_at AS activity_at FROM qa_entries
      JOIN recently_viewed ON recently_viewed.qa_id = qa_entries.id
      ORDER BY recently_viewed.viewed_at DESC
      LIMIT ?`,
     [limit]
   );
-  return rows.map(toQAEntry);
+  return rows.map((row) => ({ ...toQAEntry(row), activityAt: row.activity_at }));
 }
 
 // ---- Emergency contacts / Help & Support ----
