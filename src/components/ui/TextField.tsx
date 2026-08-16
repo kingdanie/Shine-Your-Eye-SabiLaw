@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { Platform, Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
 import { colors, radius, spacing, typography } from '@/theme';
 
@@ -92,5 +92,7 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.textPrimary,
     paddingVertical: spacing.sm,
+    // RN Web adds a native focus ring on top of our own border treatment.
+    ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : {}),
   },
 });

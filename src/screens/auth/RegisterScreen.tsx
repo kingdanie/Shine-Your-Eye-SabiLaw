@@ -77,7 +77,7 @@ export function RegisterScreen() {
 
         <Pressable onPress={() => router.push('/(auth)/login')} style={styles.loginLink}>
           <AppText variant="labelSm" color={colors.textSecondary}>
-            {t('auth.login.noAccount')}{' '}
+            {t('auth.register.haveAccount')}{' '}
           </AppText>
           <AppText variant="labelSm" color={colors.primary}>
             {t('common.signIn')}

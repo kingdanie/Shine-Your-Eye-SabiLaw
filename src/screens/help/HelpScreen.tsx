@@ -8,11 +8,11 @@ import { getEmergencyContacts, type EmergencyContactRow } from '@/db';
 import { useTranslation } from '@/i18n';
 import { colors, spacing } from '@/theme';
 
-const CATEGORY_ORDER: EmergencyContactRow['category'][] = [
-  'police',
-  'human-rights',
-  'legal-aid',
-  'lawyer-directory',
+/** Groups: all "emergency" categories share one heading; the lawyer
+ * directory (not an emergency service) gets its own. */
+const GROUPS: { headingKey: string; categories: EmergencyContactRow['category'][] }[] = [
+  { headingKey: 'help.emergencyHeading', categories: ['police', 'human-rights', 'legal-aid'] },
+  { headingKey: 'help.directoryHeading', categories: ['lawyer-directory'] },
 ];
 
 /** Reached from the Home FAB (1 tap) or Profile → Help & Support (2 taps),
@@ -31,9 +31,9 @@ export function HelpScreen() {
     Linking.openURL(url).catch(() => {});
   };
 
-  const grouped = CATEGORY_ORDER.map((category) => ({
-    category,
-    contacts: contacts.filter((c) => c.category === category),
+  const grouped = GROUPS.map((group) => ({
+    headingKey: group.headingKey,
+    contacts: contacts.filter((c) => group.categories.includes(c.category)),
   })).filter((g) => g.contacts.length > 0);
 
   return (
@@ -45,12 +45,8 @@ export function HelpScreen() {
         </AppText>
 
         {grouped.map((group) => (
-          <View key={group.category} style={styles.group}>
-            <AppText variant="headlineSm">
-              {group.category === 'lawyer-directory'
-                ? t('help.directoryHeading')
-                : t('help.emergencyHeading')}
-            </AppText>
+          <View key={group.headingKey} style={styles.group}>
+            <AppText variant="headlineSm">{t(group.headingKey)}</AppText>
             {group.contacts.map((c) => (
               <EmergencyCard
                 key={c.id}

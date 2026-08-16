@@ -39,6 +39,8 @@ export const pcm: Record<string, string> = {
     'Pick small topics make we show you relevant answers first. You fit skip am.',
   'onboarding.step3.cta': 'Don finish',
 
+  'auth.register.haveAccount': 'You don already get account?',
+
   'home.greeting': 'Good morning, {{name}} 👋',
   'home.subtitle': 'Get clear answer to your legal wahala and know your right.',
   'home.searchPlaceholder': 'Wetin be the legal issue wey we fit help you with?',

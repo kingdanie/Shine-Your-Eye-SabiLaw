@@ -43,6 +43,7 @@ export const en: Record<string, string> = {
   'auth.register.subtitle': 'Secure, private, and always available.',
   'auth.register.placeholder': 'Phone Number or Email',
   'auth.register.terms': 'By joining, you agree to our Terms of Service and Privacy Policy.',
+  'auth.register.haveAccount': 'Already have an account?',
   'auth.login.title': 'Welcome Back',
   'auth.login.subtitle': 'Sign in to access your saved history.',
   'auth.login.placeholderIdentifier': 'Phone or Email',

@@ -31,7 +31,7 @@ export function ProfileScreen() {
           <AppText variant="headlineSm" color={colors.onPrimary} style={styles.center}>
             {isLoggedIn ? profile!.displayName : t('profile.guestName')}
           </AppText>
-          {isLoggedIn && (
+          {isLoggedIn && profile!.identifier !== profile!.displayName && (
             <AppText variant="bodyMd" color={colors.onPrimary} style={styles.center}>
               {profile!.identifier}
             </AppText>
