@@ -19,7 +19,7 @@ export function PlaceholderSettingsScreen({
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar title={title} onBack={() => router.back()} />
+      <TopBar title={title} onBack={router.canGoBack() ? () => router.back() : undefined} />
       <View style={styles.content}>
         <Ionicons name={icon} size={40} color={colors.textMuted} />
         <AppText variant="bodyMd" color={colors.textSecondary} style={styles.text}>

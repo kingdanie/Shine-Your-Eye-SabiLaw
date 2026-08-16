@@ -27,7 +27,7 @@ export function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar onClose={() => router.back()} />
+      <TopBar onClose={router.canGoBack() ? () => router.back() : undefined} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.badge}>
           <Ionicons name="scale" size={30} color={colors.onPrimary} />

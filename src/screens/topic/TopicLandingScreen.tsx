@@ -35,7 +35,7 @@ export function TopicLandingScreen({ topicId }: TopicLandingScreenProps) {
   if (!topic) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <TopBar onBack={() => router.back()} />
+        <TopBar onBack={router.canGoBack() ? () => router.back() : undefined} />
         <EmptyState
           icon="alert-circle-outline"
           title={t('ask.emptyResults.title')}
@@ -47,7 +47,7 @@ export function TopicLandingScreen({ topicId }: TopicLandingScreenProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar title={t(topic.label_key)} onBack={() => router.back()} />
+      <TopBar title={t(topic.label_key)} onBack={router.canGoBack() ? () => router.back() : undefined} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
           <IconBadge name={topic.icon as keyof typeof Ionicons.glyphMap} size={56} iconSize={26} />
