@@ -34,6 +34,9 @@ export const en: Record<string, string> = {
     "Pick the language you're most comfortable reading in. You can change this anytime.",
   'onboarding.step2.english': 'English',
   'onboarding.step2.pidgin': 'Pidgin',
+  'onboarding.step2.hausa': 'Hausa',
+  'onboarding.step2.igbo': 'Igbo',
+  'onboarding.step2.yoruba': 'Yorùbá',
   'onboarding.step3.title': 'What matters to you?',
   'onboarding.step3.body':
     "Pick a few topics and we'll show you relevant answers first. You can skip this.",
