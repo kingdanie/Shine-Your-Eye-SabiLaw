@@ -1,56 +1,103 @@
-# Welcome to your Expo app 👋
+# SabiLaw / Shine Your Eye *(working titles)*
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Understand your rights, in plain language.** An AI-powered legal literacy app for Nigerians — talk or text to it about the Nigerian constitution and the law, read the constitution itself, and reach emergency legal help in two taps or fewer.
 
-## Get started
+> ⚠️ **This repository contains the mobile app only.** The backend, AI services, and speech pipeline live in a separate repository and are not part of this codebase.
 
-1. Install dependencies
+## The Vision
 
-   ```bash
-   npm install
-   ```
+Most Nigerians never read the law that governs them — it's written in dense legal English, scattered across statutes, and intimidating to approach. This app closes that gap:
 
-2. Start the app
+- **Ask, your way.** Type or *speak* a question in everyday language — "Can my landlord lock me out?", "Police wan search my phone, e legal?" — and get a short, honest answer grounded in the actual Nigerian constitution and statutes, with the citation attached.
+- **Read the law itself.** A dedicated Constitution section lets anyone read the full Constitution of Nigeria directly in the app, offline, with plain-language context alongside the legal text.
+- **In your language.** English, Nigerian Pidgin, Hausa, Igbo, and Yoruba — including **voice in and voice out**: speak your question in your language, hear the answer back in it.
+- **Help when it matters.** Emergency contacts (police complaint units, human rights commission, legal aid) and a path to a real lawyer, always reachable in ≤2 taps — because the moment you need this app most may be the moment you're most stressed.
 
-   ```bash
-   npx expo start
-   ```
+The tone throughout is deliberately calm, warm, and non-alarming — a knowledgeable friend, not a protest pamphlet and not a law firm.
 
-In the output, you'll find options to open the app in a
+## Core Principles
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+These are product requirements, not preferences — the primary audience is on low-end Android phones with slow, expensive mobile data:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| Principle | What it means in practice |
+|---|---|
+| **Offline-first** | All bundled content (topics, Q&A, constitution) lives in on-device SQLite. Previously viewed answers work with no connection, and the app says so honestly — it never fakes freshness. |
+| **Very light** | Every dependency is weighed. Measured JS+assets export is ~16MB total (after cutting 17MB of unused icon/font families). No raster illustrations, no heavy libraries, deep-imports only. |
+| **Plain language** | No legal jargon anywhere — not in answers, not in buttons, not in error messages. |
+| **Trust visible** | Every answer shows its source (Act + section, tappable to the full text) and a clear "this isn't legal advice" note. |
+| **Accessible** | 44×44 touch targets, screen-reader labels, OS font scaling respected, WCAG-AA contrast — enforced centrally in the design-system primitives. |
 
-## Get a fresh project
+## Current Status
 
-When you're ready, run:
+**Stage 0 (MVP scaffold) is complete.** All core screens are built and navigable end-to-end on seeded mock content: onboarding, home, ask, answer (with citations, offline states, and a high-stakes "Talk to a Lawyer" path), legal source view, browse-by-topic, saved/history, profile, and emergency help. English is fully covered; Pidgin partially, with automatic English fallback.
+
+> ⚠️ **Not production-ready.** All legal content in this build is unreviewed mock/paraphrase material, and emergency contact numbers are explicit unverified placeholders (see `src/db/seed-data.ts`). Verified content and legal sign-off are the first order of business before any release.
+
+## Roadmap
+
+| Stage | Focus | Status |
+|---|---|---|
+| **0 — MVP scaffold** | All screens on mock data · offline-first SQLite layer · Civic Green design system · EN + partial Pidgin i18n | ✅ Done |
+| **1 — Real content + Constitution reader** | Legally reviewed statute content & verified emergency contacts · full Constitution of Nigeria bundled into SQLite, readable & searchable offline (FTS5) · complete EN/Pidgin content | 🔜 Next |
+| **2 — AI Q&A (text)** | Backend (separate repo) with retrieval-grounded AI over the constitution & statutes · Ask flow calls it live · citations preserved in every AI answer · graceful offline fallback to cached/curated answers | Planned |
+| **3 — Voice (English first)** | Speech-to-text for asking · text-to-speech for answers · processed server-side so the app stays light | Planned |
+| **4 — Full multilingual** | Hausa, Igbo, Yoruba UI + content localization · then voice in/out in all supported languages · the i18n layer was built for this — adding a language is a dictionary file, not a redesign | Planned |
+| **5 — Offline AI module (experimental)** | *Optional, opt-in* on-device model download for AI answers without internet — app discloses exact download size before the user accepts · pursued only if on-device models for Nigerian languages mature enough to be worth the weight | Exploratory |
+
+**Why cloud-first for the AI (stages 2–4):** running the AI server-side keeps the app itself tiny and works on any phone — no user is ever forced to download a model. On-device AI (stage 5) stays strictly optional so the "very light" promise is never broken for people who don't opt in.
+
+## Tech Stack
+
+| Choice | Why |
+|---|---|
+| **Expo SDK 57 + TypeScript (strict)** | One codebase for iOS, Android, and web; managed workflow keeps native complexity out |
+| **Expo Router** | File-based routing with per-route code splitting and web URL support for free |
+| **expo-sqlite** | The offline content store — queryable, FTS-ready for constitution search, works in Expo Go |
+| **AsyncStorage** | Flat preference flags only (language, onboarding, profile) |
+| **Hand-rolled i18n** (`src/i18n`) | A ~40-line `t()`/Context beats shipping i18next for key-value dictionaries; languages are added as plain dictionary files |
+| **pnpm** | Package manager for the repo (with `node-linker=hoisted` for Metro) |
+
+Deliberately avoided: Redux/MobX, UI kits, Lottie, moment/date-fns, MMKV — see [AGENTS.md](AGENTS.md) for the full rules and rationale.
+
+## Getting Started
 
 ```bash
-npm run reset-project
+pnpm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+```bash
+npx expo start
+```
 
-### Other setup steps
+Then press `i` (iOS simulator), `a` (Android emulator), or `w` (web). The app runs in Expo Go — no custom dev client needed.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Type-check (must be clean before any commit):
 
-## Learn more
+```bash
+npx tsc --noEmit -p .
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Project Structure
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+src/app/                 # Expo Router routes — thin re-exports only
+src/screens/             # screen implementations, one folder per flow
+src/components/ui/       # design-system primitives (all screens compose from these)
+src/theme/               # Civic Green tokens: colors, type, spacing, fonts
+src/db/                  # SQLite schema, seed content, typed queries
+src/storage/             # AsyncStorage preference flags
+src/i18n/                # en / pcm dictionaries + LanguageProvider
+src/context/             # Profile + app-ready providers
+src/utils/               # small hand-rolled helpers
+```
 
-## Join the community
+## Contributing & Workflow
 
-Join our community of developers creating universal apps.
+- Branch from `develop`: `feature/<name>`, `fix/<name>`; `main` is protected and always releasable.
+- [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `perf:`, `docs:`, …).
+- `npx tsc --noEmit -p .` must pass, and observable changes should be actually run, before a PR.
+- Full coding standards, offline-first rules, and bundle-size rules: **[AGENTS.md](AGENTS.md)**.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Disclaimer
+
+This app explains Nigerian law in simple terms for general information. It is **not legal advice** for any specific case, and no lawyer–client relationship is created by using it. For advice about your own situation, talk to a qualified legal practitioner — the app's Help section exists to point you to one.
