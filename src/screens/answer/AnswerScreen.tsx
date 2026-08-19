@@ -83,7 +83,7 @@ export function AnswerScreen({ qaId }: AnswerScreenProps) {
   if (!loaded) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <TopBar title={t('answer.title')} onBack={() => router.back()} />
+        <TopBar title={t('answer.title')} onBack={router.canGoBack() ? () => router.back() : undefined} />
       </SafeAreaView>
     );
   }
@@ -91,7 +91,7 @@ export function AnswerScreen({ qaId }: AnswerScreenProps) {
   if (!entry) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <TopBar title={t('answer.title')} onBack={() => router.back()} />
+        <TopBar title={t('answer.title')} onBack={router.canGoBack() ? () => router.back() : undefined} />
         <EmptyState
           icon="alert-circle-outline"
           title={t('ask.emptyResults.title')}
@@ -107,7 +107,7 @@ export function AnswerScreen({ qaId }: AnswerScreenProps) {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <TopBar
         title={t('answer.title')}
-        onBack={() => router.back()}
+        onBack={router.canGoBack() ? () => router.back() : undefined}
         rightSlot={
           <>
             <IconButton

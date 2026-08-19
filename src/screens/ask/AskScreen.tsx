@@ -45,7 +45,9 @@ export function AskScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar onClose={() => router.back()} />
+      <TopBar
+        onClose={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/home'))}
+      />
 
       {status === 'loading' ? (
         <View style={styles.centerFill}>

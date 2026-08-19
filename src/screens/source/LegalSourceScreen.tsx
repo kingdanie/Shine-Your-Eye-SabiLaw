@@ -25,7 +25,7 @@ export function LegalSourceScreen({ qaId }: LegalSourceScreenProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar title={t('source.title')} onClose={() => router.back()} />
+      <TopBar title={t('source.title')} onClose={router.canGoBack() ? () => router.back() : undefined} />
       {!entry ? (
         <EmptyState
           icon="alert-circle-outline"
