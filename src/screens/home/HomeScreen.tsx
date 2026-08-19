@@ -103,6 +103,24 @@ export function HomeScreen() {
           ))}
         </View>
 
+        <Card
+          style={styles.banner}
+          onPress={() => router.push('/constitution')}
+          accessibilityLabel={t('home.constitutionCardTitle')}>
+          <View style={styles.bannerIcon}>
+            <Ionicons name="book" size={22} color={colors.onPrimary} />
+          </View>
+          <View style={styles.bannerText}>
+            <AppText variant="labelMd" color={colors.primary}>
+              {t('home.constitutionCardTitle')}
+            </AppText>
+            <AppText variant="caption" color={colors.textSecondary}>
+              {t('home.constitutionCardBody')}
+            </AppText>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+        </Card>
+
         <Card style={styles.banner}>
           <View style={styles.bannerIcon}>
             <Ionicons name="shield-checkmark" size={22} color={colors.onPrimary} />

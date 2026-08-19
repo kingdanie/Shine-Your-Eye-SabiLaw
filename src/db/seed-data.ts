@@ -1,4 +1,10 @@
-import type { EmergencyContactRow, QAEntryRow, TopicRow } from './types';
+import type {
+  ConstitutionChapterRow,
+  ConstitutionSectionRow,
+  EmergencyContactRow,
+  QAEntryRow,
+  TopicRow,
+} from './types';
 
 /**
  * MOCK CONTENT — for scaffolding the UI only.
@@ -369,17 +375,26 @@ export const qaEntries: QAEntryRow[] = [
 ];
 
 /**
- * PLACEHOLDER CONTACTS — `is_verified: 0` on every row deliberately.
- * These are NOT confirmed real emergency numbers. Do not ship without
- * replacing with numbers verified against the relevant agency and legal/ops
- * sign-off — this is safety-critical content.
+ * REAL PUBLISHED CONTACTS, still `is_verified: 0` deliberately. Numbers
+ * below were pulled from each agency's own official site/channel on
+ * 2026-08-19 (sources in each comment) — they are real, current published
+ * numbers, not placeholders. `is_verified` stays 0 because this app has not
+ * had the ops/legal sign-off step (calling to confirm the line is live,
+ * confirming with the agency this is still their current number) that
+ * safety-critical content needs before shipping — that sign-off, not the
+ * sourcing, is what's still pending.
+ *
+ * 'lawyer-directory' has no real agency behind it yet (the PRD's "find a
+ * lawyer" referral path isn't built) — left as an explicit placeholder.
  */
 export const emergencyContacts: EmergencyContactRow[] = [
   {
     id: 'police-complaint-unit',
     name_key: 'emergency.police-complaint-unit.name',
     category: 'police',
-    phone: '0800-000-0000',
+    // Nigeria Police Force Complaint Response Unit (CRU) — published call
+    // lines, https://x.com/PoliceNG/status/1684850274291085312
+    phone: '0805-700-0001',
     description_key: 'emergency.police-complaint-unit.description',
     is_verified: 0,
   },
@@ -387,7 +402,9 @@ export const emergencyContacts: EmergencyContactRow[] = [
     id: 'human-rights-commission',
     name_key: 'emergency.human-rights-commission.name',
     category: 'human-rights',
-    phone: '0800-111-1111',
+    // National Human Rights Commission — toll-free line,
+    // https://www.nigeriarights.gov.ng/contact-us.html
+    phone: '0800-647-2428',
     description_key: 'emergency.human-rights-commission.description',
     is_verified: 0,
   },
@@ -395,7 +412,9 @@ export const emergencyContacts: EmergencyContactRow[] = [
     id: 'legal-aid-council',
     name_key: 'emergency.legal-aid-council.name',
     category: 'legal-aid',
-    phone: '0800-222-2222',
+    // Legal Aid Council of Nigeria — call centre line,
+    // https://legalaidcouncil.gov.ng/contact-us/
+    phone: '0703-191-5990',
     description_key: 'emergency.legal-aid-council.description',
     is_verified: 0,
   },
@@ -408,3 +427,49 @@ export const emergencyContacts: EmergencyContactRow[] = [
     is_verified: 0,
   },
 ];
+
+/**
+ * Constitution reader (Stage 1) — structure only; the actual heading/body
+ * text lives in i18n (`constitution.section.<n>.heading` /
+ * `.body`, en.ts only — this is legal source text, not translated, same
+ * convention as qa_entries.full_source_text_key having no pcm.ts entry).
+ *
+ * Chapter IV (Fundamental Rights, ss. 33–46) is the only chapter bundled so
+ * far — it's the chapter this app's Q&A content actually cites most. Text
+ * was transcribed from a public reproduction of the Official Gazette text
+ * and cross-checked section-by-section against a second, independent
+ * source (the official Gazette PDF at
+ * https://nigeriarights.gov.ng/files/constitution.pdf) — anywhere the two
+ * agreed, that wording was kept verbatim, including several small
+ * typographical errors present in the original printed Constitution
+ * itself (e.g. s.34(1)(b) "he held" instead of "be held"; s.34(1)(c)
+ * "forced of compulsory labour" instead of "or"; s.45(1)(b) "rights and
+ * freedom or other persons" instead of "of"; s.46(2) "enforcing" instead
+ * of "enforcement") — preserved for fidelity rather than silently
+ * corrected. The only edits made were fixing 1-2 words that both sources
+ * independently mangled at the same mid-word PDF line-wrap point (e.g.
+ * "independenc"/"e" in s.36(1)), confirmed as an extraction artifact, not
+ * original text. The remaining 7 chapters are not bundled yet; the
+ * Constitution screen says so rather than implying completeness.
+ */
+export const constitutionChapters: ConstitutionChapterRow[] = [
+  {
+    id: 'chapter-4',
+    number: 4,
+    title_key: 'constitution.chapter.4.title',
+    sort_order: 0,
+  },
+];
+
+const chapter4SectionNumbers = [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
+
+export const constitutionSections: ConstitutionSectionRow[] = chapter4SectionNumbers.map(
+  (number, index) => ({
+    id: `section-${number}`,
+    chapter_id: 'chapter-4',
+    number,
+    heading_key: `constitution.section.${number}.heading`,
+    body_key: `constitution.section.${number}.body`,
+    sort_order: index,
+  })
+);

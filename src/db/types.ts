@@ -57,3 +57,19 @@ export interface RecentlyViewedRow {
   qa_id: string;
   viewed_at: number;
 }
+
+export interface ConstitutionChapterRow {
+  id: string;
+  number: number;
+  title_key: string;
+  sort_order: number;
+}
+
+export interface ConstitutionSectionRow {
+  id: string;
+  chapter_id: string;
+  number: number;
+  heading_key: string;
+  body_key: string;
+  sort_order: number;
+}
