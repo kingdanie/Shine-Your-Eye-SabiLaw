@@ -31,14 +31,16 @@ These are product requirements, not preferences — the primary audience is on l
 
 **Stage 0 (MVP scaffold) is complete.** All core screens are built and navigable end-to-end on seeded mock content: onboarding, home, ask, answer (with citations, offline states, and a high-stakes "Talk to a Lawyer" path), legal source view, browse-by-topic, saved/history, profile, and emergency help. English is fully covered; Pidgin partially, with automatic English fallback.
 
-> ⚠️ **Not production-ready.** All legal content in this build is unreviewed mock/paraphrase material, and emergency contact numbers are explicit unverified placeholders (see `src/db/seed-data.ts`). Verified content and legal sign-off are the first order of business before any release.
+**Stage 1 (real content + Constitution reader) is in progress.** A Constitution reader is bundled and working: Chapter IV (Fundamental Rights, ss. 33–46) is real, verbatim Official Gazette text — cross-checked section-by-section against an independent government-published copy — browsable by chapter/section and searchable fully offline (FTS5 on native, with an automatic plain-SQL fallback on platforms like web where the fts5 module isn't available). The other 7 chapters aren't bundled yet, and the app says so rather than implying completeness. Emergency contact numbers were updated from explicit fake placeholders to each agency's real, currently-published number (sources cited in `src/db/seed-data.ts`) — they're still marked `is_verified: 0` pending the ops/legal sign-off step (confirming with each agency this is still their live line) that safety-critical content needs before shipping.
+
+> ⚠️ **Not production-ready.** The Q&A content (topics, short answers, citations) is still unreviewed mock/paraphrase material — only the bundled Chapter IV Constitution text and the emergency contact numbers have been upgraded to real sourced content so far. Legal sign-off from qualified Nigerian counsel is still the first order of business before any release.
 
 ## Roadmap
 
 | Stage | Focus | Status |
 |---|---|---|
 | **0 — MVP scaffold** | All screens on mock data · offline-first SQLite layer · Civic Green design system · EN + partial Pidgin i18n | ✅ Done |
-| **1 — Real content + Constitution reader** | Legally reviewed statute content & verified emergency contacts · full Constitution of Nigeria bundled into SQLite, readable & searchable offline (FTS5) · complete EN/Pidgin content | 🔜 Next |
+| **1 — Real content + Constitution reader** | Legally reviewed statute content & verified emergency contacts · full Constitution of Nigeria bundled into SQLite, readable & searchable offline (FTS5) · complete EN/Pidgin content | 🚧 In progress — Constitution reader shipped (Chapter IV only) + real emergency contact numbers; Q&A content still mock, remaining 7 chapters not bundled, legal sign-off still pending |
 | **2 — AI Q&A (text)** | Backend (separate repo) with retrieval-grounded AI over the constitution & statutes · Ask flow calls it live · citations preserved in every AI answer · graceful offline fallback to cached/curated answers | Planned |
 | **3 — Voice (English first)** | Speech-to-text for asking · text-to-speech for answers · processed server-side so the app stays light | Planned |
 | **4 — Full multilingual** | Hausa, Igbo, Yoruba UI + content localization · then voice in/out in all supported languages · the i18n layer was built for this — adding a language is a dictionary file, not a redesign | Planned |
