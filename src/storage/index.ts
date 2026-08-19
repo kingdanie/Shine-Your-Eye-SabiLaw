@@ -37,11 +37,13 @@ export async function setInterests(interests: TopicInterest[]): Promise<void> {
 
 // ---- Language ----
 
-export type LanguageCode = 'en' | 'pcm';
+export type LanguageCode = 'en' | 'pcm' | 'ha' | 'ig' | 'yo';
+
+const LANGUAGE_CODES: readonly LanguageCode[] = ['en', 'pcm', 'ha', 'ig', 'yo'];
 
 export async function getStoredLanguage(): Promise<LanguageCode | null> {
   const raw = await AsyncStorage.getItem(STORAGE_KEYS.language);
-  return raw === 'en' || raw === 'pcm' ? raw : null;
+  return LANGUAGE_CODES.includes(raw as LanguageCode) ? (raw as LanguageCode) : null;
 }
 
 export async function setStoredLanguage(language: LanguageCode): Promise<void> {

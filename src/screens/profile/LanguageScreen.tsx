@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText, TopBar } from '@/components/ui';
@@ -11,6 +11,9 @@ import { colors, radius, spacing } from '@/theme';
 const OPTIONS: { code: LanguageCode; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { code: 'en', label: 'English', icon: 'globe-outline' },
   { code: 'pcm', label: 'Pidgin', icon: 'chatbubbles-outline' },
+  { code: 'ha', label: 'Hausa', icon: 'chatbubbles-outline' },
+  { code: 'ig', label: 'Igbo', icon: 'chatbubbles-outline' },
+  { code: 'yo', label: 'Yorùbá', icon: 'chatbubbles-outline' },
 ];
 
 export function LanguageScreen() {
@@ -39,7 +42,7 @@ export function LanguageScreen() {
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
