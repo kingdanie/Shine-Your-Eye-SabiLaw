@@ -23,7 +23,7 @@ export function LanguageScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <TopBar title={t('profile.language')} onBack={router.canGoBack() ? () => router.back() : undefined} />
-      <View style={styles.list}>
+      <ScrollView style={styles.list}>
         {OPTIONS.map((opt) => {
           const active = opt.code === language;
           return (
