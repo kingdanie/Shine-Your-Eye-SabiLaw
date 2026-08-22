@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS constitution_search_plain (
 `;
 
 /** Bump when SCHEMA_SQL or seed content shape changes, to force a reseed. */
-export const SCHEMA_VERSION = '2';
+export const SCHEMA_VERSION = '3';
 
 /** Created/populated separately from SCHEMA_SQL, wrapped in its own
  * try/catch — see the big comment above. Only takes effect where the

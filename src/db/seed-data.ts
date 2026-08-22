@@ -434,42 +434,90 @@ export const emergencyContacts: EmergencyContactRow[] = [
  * `.body`, en.ts only — this is legal source text, not translated, same
  * convention as qa_entries.full_source_text_key having no pcm.ts entry).
  *
- * Chapter IV (Fundamental Rights, ss. 33–46) is the only chapter bundled so
- * far — it's the chapter this app's Q&A content actually cites most. Text
- * was transcribed from a public reproduction of the Official Gazette text
- * and cross-checked section-by-section against a second, independent
- * source (the official Gazette PDF at
- * https://nigeriarights.gov.ng/files/constitution.pdf) — anywhere the two
- * agreed, that wording was kept verbatim, including several small
- * typographical errors present in the original printed Constitution
- * itself (e.g. s.34(1)(b) "he held" instead of "be held"; s.34(1)(c)
- * "forced of compulsory labour" instead of "or"; s.45(1)(b) "rights and
- * freedom or other persons" instead of "of"; s.46(2) "enforcing" instead
- * of "enforcement") — preserved for fidelity rather than silently
- * corrected. The only edits made were fixing 1-2 words that both sources
- * independently mangled at the same mid-word PDF line-wrap point (e.g.
- * "independenc"/"e" in s.36(1)), confirmed as an extraction artifact, not
- * original text. The remaining 7 chapters are not bundled yet; the
- * Constitution screen says so rather than implying completeness.
+ * Five of the eight chapters are bundled so far: Chapter IV (Fundamental
+ * Rights, ss. 33–46) — the chapter this app's Q&A content actually cites
+ * most — plus Chapters I, II, III and VIII (ss. 1–32 and 297–320). Text was
+ * transcribed from a public reproduction of the Official Gazette text and
+ * cross-checked section-by-section against a second, independent source —
+ * for Chapter IV, the official Gazette PDF at
+ * https://nigeriarights.gov.ng/files/constitution.pdf; for Chapters I, II,
+ * III and VIII, the Comparative Constitutions Project's transcription
+ * (https://www.constituteproject.org/constitution/Nigeria_1999) was used
+ * as the clean primary text (that same Gazette PDF's own text extraction
+ * is badly corrupted by page-layout artifacts in these chapters — lines
+ * routinely lose their first few characters — so it served only as the
+ * cross-check, not the primary source, here). Anywhere the two agreed,
+ * that wording was kept verbatim, including several small typographical
+ * errors present in the original printed Constitution itself (e.g. s.3(4)
+ * "First Scheduled" instead of "First Schedule"; s.6(3) "(5)(a) to (1)"
+ * instead of a lettered paragraph — also confirmed against a third source,
+ * WIPO Lex; s.11(1)/(3) "any part therefore" instead of "thereof";
+ * s.34(1)(b) "he held" instead of "be held"; s.34(1)(c) "forced of
+ * compulsory labour" instead of "or"; s.45(1)(b) "rights and freedom or
+ * other persons" instead of "of"; s.46(2) "enforcing" instead of
+ * "enforcement") — preserved for fidelity rather than silently corrected.
+ * Edits made were limited to fixing words that were clearly OCR/extraction
+ * artifacts unique to one source and contradicted by the other (e.g. the
+ * Gazette PDF's "Cod of Conduct", "Part 11" for "Part II", and a dropped
+ * paragraph of s.318 definitions, all confirmed complete and correctly
+ * spelled in the Constitute Project text). Chapters V, VI and VII (The
+ * Legislature, The Executive, The Judicature — around 250 sections
+ * combined) are not bundled yet; the Constitution screen says so rather
+ * than implying completeness.
  */
 export const constitutionChapters: ConstitutionChapterRow[] = [
+  {
+    id: 'chapter-1',
+    number: 1,
+    title_key: 'constitution.chapter.1.title',
+    sort_order: 0,
+  },
+  {
+    id: 'chapter-2',
+    number: 2,
+    title_key: 'constitution.chapter.2.title',
+    sort_order: 1,
+  },
+  {
+    id: 'chapter-3',
+    number: 3,
+    title_key: 'constitution.chapter.3.title',
+    sort_order: 2,
+  },
   {
     id: 'chapter-4',
     number: 4,
     title_key: 'constitution.chapter.4.title',
-    sort_order: 0,
+    sort_order: 3,
+  },
+  {
+    id: 'chapter-8',
+    number: 8,
+    title_key: 'constitution.chapter.8.title',
+    sort_order: 4,
   },
 ];
 
-const chapter4SectionNumbers = [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
+const chapterSectionNumbers: Record<string, number[]> = {
+  'chapter-1': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  'chapter-2': [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+  'chapter-3': [25, 26, 27, 28, 29, 30, 31, 32],
+  'chapter-4': [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+  'chapter-8': [
+    297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315,
+    316, 317, 318, 319, 320,
+  ],
+};
 
-export const constitutionSections: ConstitutionSectionRow[] = chapter4SectionNumbers.map(
-  (number, index) => ({
+export const constitutionSections: ConstitutionSectionRow[] = Object.entries(
+  chapterSectionNumbers
+).flatMap(([chapterId, numbers]) =>
+  numbers.map((number, index) => ({
     id: `section-${number}`,
-    chapter_id: 'chapter-4',
+    chapter_id: chapterId,
     number,
     heading_key: `constitution.section.${number}.heading`,
     body_key: `constitution.section.${number}.body`,
     sort_order: index,
-  })
+  }))
 );
