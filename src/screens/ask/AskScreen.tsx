@@ -6,16 +6,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText, Button, EmptyState, TextField, TopBar, VoiceFAB } from '@/components/ui';
 import { searchQA } from '@/db';
 import { useTranslation } from '@/i18n';
+import { canTranscribe } from '@/services/speech';
 import { colors, spacing } from '@/theme';
 
 type Status = 'idle' | 'loading' | 'no-results';
 
 export function AskScreen() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<Status>('idle');
-  const [listening, setListening] = useState(false);
 
   const submit = async () => {
     if (!query.trim()) return;
@@ -33,14 +33,13 @@ export function AskScreen() {
   };
 
   const onMicPress = () => {
-    setListening(true);
-    setTimeout(() => {
-      setListening(false);
-      Alert.alert(
-        t('ask.listening'),
-        "Voice input isn't available in this preview build — please type your question below."
-      );
-    }, 900);
+    // Every language is asr:'none' until Stage 2 retrieval and mic capture land
+    // (docs/VOICE.md §2), so this is the only branch that runs today. Deliberately
+    // no simulated "listening" pause first: miming a mic that isn't recording is
+    // precisely the dishonest degrade the doc rules out.
+    if (!canTranscribe(language)) {
+      Alert.alert(t('ask.voiceUnavailable.title'), t('ask.voiceUnavailable.body'));
+    }
   };
 
   return (
@@ -73,7 +72,13 @@ export function AskScreen() {
           </AppText>
 
           <View style={styles.voiceWrap}>
-            <VoiceFAB active={listening} onPress={onMicPress} accessibilityLabel={t('ask.listening')} />
+            {/* Never active: nothing is recording until V2 wires up mic capture,
+                and a pulsing "listening" ring would be claiming otherwise. */}
+            <VoiceFAB
+              active={false}
+              onPress={onMicPress}
+              accessibilityLabel={t('ask.micIdleLabel')}
+            />
           </View>
 
           <TextField

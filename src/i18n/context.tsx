@@ -14,10 +14,25 @@ import { pcm } from './pcm';
 
 const dictionaries: Record<LanguageCode, Record<string, string>> = { en, pcm };
 
+/**
+ * A resolved string together with the language it actually came from — which is not
+ * always the selected language, because of the English fallback in `t` below.
+ *
+ * Only speech needs this distinction: rendering English text under a Yoruba UI setting
+ * is a harmless gap, but *speaking* English words with a Yoruba voice is fluent-sounding
+ * nonsense. See docs/VOICE.md §2.
+ */
+export interface SpokenText {
+  text: string;
+  language: LanguageCode;
+}
+
 interface LanguageContextValue {
   language: LanguageCode;
   setLanguage: (lang: LanguageCode) => Promise<void>;
   t: (key: string, vars?: Record<string, string | number>) => string;
+  /** Like `t`, but reports which dictionary supplied the string. For read-aloud. */
+  resolveSpoken: (key: string, vars?: Record<string, string | number>) => SpokenText;
   /** True once the persisted language preference has been loaded. */
   ready: boolean;
 }
@@ -69,9 +84,22 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     [language]
   );
 
+  const resolveSpoken = useCallback(
+    (key: string, vars?: Record<string, string | number>): SpokenText => {
+      const own = dictionaries[language][key];
+      if (own !== undefined) return { text: interpolate(own, vars), language };
+
+      // Fell through to English — so the voice must be English too, whatever the
+      // user's UI language is set to.
+      const fallback = en[key];
+      return { text: interpolate(fallback ?? key, vars), language: 'en' };
+    },
+    [language]
+  );
+
   const value = useMemo(
-    () => ({ language, setLanguage, t, ready }),
-    [language, setLanguage, t, ready]
+    () => ({ language, setLanguage, t, resolveSpoken, ready }),
+    [language, setLanguage, t, resolveSpoken, ready]
   );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

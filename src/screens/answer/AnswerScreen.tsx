@@ -13,6 +13,7 @@ import {
   EmptyState,
   IconButton,
   OfflineBanner,
+  SpeakButton,
   TopBar,
   VerdictCard,
 } from '@/components/ui';
@@ -26,6 +27,7 @@ import {
   type QAEntry,
 } from '@/db';
 import { useTranslation } from '@/i18n';
+import { canSpeak, composeUtterance, useSpeak } from '@/services/speech';
 import { colors, spacing } from '@/theme';
 
 import { WhyItMattersList } from './WhyItMattersList';
@@ -36,7 +38,8 @@ interface AnswerScreenProps {
 
 export function AnswerScreen({ qaId }: AnswerScreenProps) {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, resolveSpoken } = useTranslation();
+  const { speaking, toggle: toggleSpeech } = useSpeak();
   const [entry, setEntry] = useState<QAEntry | null>(null);
   const [related, setRelated] = useState<QAEntry[]>([]);
   const [saved, setSaved] = useState(false);
@@ -103,6 +106,14 @@ export function AnswerScreen({ qaId }: AnswerScreenProps) {
 
   const showOfflineBanner = !isOnline;
 
+  // Same question + short-answer pairing as sharing. The voice follows the language
+  // these strings actually resolved to, not the selected UI language — see
+  // resolveSpoken in src/i18n/context.tsx.
+  const spoken = composeUtterance(
+    resolveSpoken(entry.question_key),
+    resolveSpoken(entry.short_answer_key)
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <TopBar
@@ -110,6 +121,12 @@ export function AnswerScreen({ qaId }: AnswerScreenProps) {
         onBack={() => router.back()}
         rightSlot={
           <>
+            {canSpeak(spoken.language) && (
+              <SpeakButton
+                speaking={speaking}
+                onPress={() => void toggleSpeech(spoken.text, spoken.language)}
+              />
+            )}
             <IconButton
               name={saved ? 'bookmark' : 'bookmark-outline'}
               accessibilityLabel={t('common.save')}

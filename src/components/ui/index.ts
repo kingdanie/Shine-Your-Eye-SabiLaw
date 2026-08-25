@@ -13,6 +13,7 @@ export { OfflineBanner } from './OfflineBanner';
 export { DotPagination } from './DotPagination';
 export { CitationBadge } from './CitationBadge';
 export { VerdictCard } from './VerdictCard';
+export { SpeakButton } from './SpeakButton';
 export { VoiceFAB } from './VoiceFAB';
 export { EmergencyCard } from './EmergencyCard';
 export { TopicCard } from './TopicCard';

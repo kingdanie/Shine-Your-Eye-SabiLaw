@@ -60,8 +60,13 @@ export const pcm: Record<string, string> = {
   'ask.loading': 'We dey check the law...',
   'ask.emptyResults.title': 'We no fit find answer for that one',
   'ask.emptyResults.body': 'Try ask am another way, or check the topics below.',
+  'ask.micIdleLabel': 'Use voice ask am',
+  'ask.voiceUnavailable.title': 'Voice question dey come',
+  'ask.voiceUnavailable.body': 'You never fit talk your question yet — abeg type am for down.',
 
   'answer.title': 'Answer',
+  'answer.readAloud': 'Make e read this answer give you',
+  'answer.stopReading': 'Stop the reading',
   'answer.shortAnswerLabel': 'Short Answer:',
   'answer.whyHeading': 'Why e be like this:',
   'answer.readMore': 'Read more',
