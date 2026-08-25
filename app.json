@@ -36,6 +36,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "speech": {
+        "provider": "device"
+      }
     }
   }
 }

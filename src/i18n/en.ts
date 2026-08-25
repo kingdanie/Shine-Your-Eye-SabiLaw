@@ -76,8 +76,13 @@ export const en: Record<string, string> = {
   'ask.loading': 'Looking through the law...',
   'ask.emptyResults.title': "We couldn't find an answer for that",
   'ask.emptyResults.body': 'Try asking it differently, or browse topics below.',
+  'ask.micIdleLabel': 'Ask by voice',
+  'ask.voiceUnavailable.title': 'Voice questions are coming',
+  'ask.voiceUnavailable.body': "You can't ask by voice yet — type your question below instead.",
 
   'answer.title': 'Answer',
+  'answer.readAloud': 'Read this answer aloud',
+  'answer.stopReading': 'Stop reading',
   'answer.shortAnswerLabel': 'Short Answer:',
   'answer.whyHeading': "Here's why:",
   'answer.readMore': 'Read more',
