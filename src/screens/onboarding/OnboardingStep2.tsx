@@ -13,6 +13,9 @@ import { OnboardingLayout } from './OnboardingLayout';
 const OPTIONS: { code: LanguageCode; labelKey: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { code: 'en', labelKey: 'onboarding.step2.english', icon: 'globe-outline' },
   { code: 'pcm', labelKey: 'onboarding.step2.pidgin', icon: 'chatbubbles-outline' },
+  { code: 'ha', labelKey: 'onboarding.step2.hausa', icon: 'chatbubbles-outline' },
+  { code: 'ig', labelKey: 'onboarding.step2.igbo', icon: 'chatbubbles-outline' },
+  { code: 'yo', labelKey: 'onboarding.step2.yoruba', icon: 'chatbubbles-outline' },
 ];
 
 export function OnboardingStep2() {

@@ -80,6 +80,11 @@ export function ProfileScreen() {
               onPress={() => router.push('/(tabs)/profile/privacy-security')}
             />
             <SettingsRow
+              icon="book-outline"
+              label={t('profile.constitution')}
+              onPress={() => router.push('/constitution')}
+            />
+            <SettingsRow
               icon="help-buoy-outline"
               label={t('profile.helpSupport')}
               onPress={() => router.push('/(tabs)/profile/help-support')}

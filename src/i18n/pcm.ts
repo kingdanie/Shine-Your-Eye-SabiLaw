@@ -93,4 +93,10 @@ export const pcm: Record<string, string> = {
   'help.callAction': 'Call',
 
   'disclaimer.text': 'This one dey explain the law for simple way. E no be legal advice for your own case.',
+
+  'constitution.title': 'The Constitution',
+  'constitution.subtitle': 'Read the Constitution of Nigeria for the app — you fit read am even offline.',
+  'constitution.searchPlaceholder': 'Search the Constitution...',
+  'constitution.availableHeading': 'E dey available now',
+  'constitution.comingSoonHeading': 'E dey come soon',
 };

@@ -26,7 +26,7 @@ export function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar onClose={() => router.back()} />
+      <TopBar onClose={router.canGoBack() ? () => router.back() : undefined} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.badge}>
           <Ionicons name="shield-checkmark" size={32} color={colors.onPrimary} />

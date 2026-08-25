@@ -11,8 +11,11 @@ import { getStoredLanguage, setStoredLanguage, type LanguageCode } from '@/stora
 
 import { en } from './en';
 import { pcm } from './pcm';
+import { ha } from './ha';
+import { ig } from './ig';
+import { yo } from './yo';
 
-const dictionaries: Record<LanguageCode, Record<string, string>> = { en, pcm };
+const dictionaries: Record<LanguageCode, Record<string, string>> = { en, pcm, ha, ig, yo };
 
 /**
  * A resolved string together with the language it actually came from — which is not
@@ -47,9 +50,11 @@ function interpolate(template: string, vars?: Record<string, string | number>): 
   );
 }
 
-/** No Pidgin locale tag exists on-device, so there is nothing meaningful to
- * detect at first boot — English is the default until the user picks
- * Pidgin explicitly in onboarding or Profile → Language. */
+/** None of the supported non-English languages map cleanly to a device
+ * locale tag we could auto-detect (Pidgin has no ISO tag; Hausa/Igbo/Yoruba
+ * device locale doesn't imply the user wants the app in that language) —
+ * English is the default until the user picks explicitly in onboarding or
+ * Profile → Language. */
 const DEFAULT_LANGUAGE: LanguageCode = 'en';
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {

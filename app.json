@@ -30,7 +30,7 @@
           "imageWidth": 76
         }
       ],
-      "expo-sqlite",
+      ["expo-sqlite", { "enableFTS": true }],
       "expo-localization"
     ],
     "experiments": {
