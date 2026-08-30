@@ -97,7 +97,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderSubtle,
   },
   numberBadge: {
-    width: 32,
+    // minWidth, not width: Chapter VII's ss. 254A-254F are four characters
+    // wide, so the badge grows into a pill rather than clipping them.
+    minWidth: 32,
+    paddingHorizontal: spacing.xs,
     height: 32,
     borderRadius: 16,
     backgroundColor: colors.secondaryContainer,

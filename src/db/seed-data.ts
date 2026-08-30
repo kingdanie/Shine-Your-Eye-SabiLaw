@@ -460,8 +460,30 @@ export const emergencyContacts: EmergencyContactRow[] = [
  * artifacts unique to one source and contradicted by the other (e.g. the
  * Gazette PDF's "Cod of Conduct", "Part 11" for "Part II", and a dropped
  * paragraph of s.318 definitions, all confirmed complete and correctly
- * spelled in the Constitute Project text). Chapters V, VI and VII (The
- * Legislature, The Executive, The Judicature — around 250 sections
+ * spelled in the Constitute Project text).
+ *
+ * Chapter VII (The Judicature, ss. 230-296 plus ss. 254A-254F) was added the
+ * same way, with two wrinkles worth recording:
+ *
+ *  - ss. 254A-254F (the National Industrial Court) were inserted by the
+ *    Constitution (Third Alteration) Act 2010 and so appear in neither
+ *    Gazette-lineage copy, which both predate it. Their cross-check is the
+ *    Third Alteration Act's own text; the two agree to ~99% of words, with
+ *    every difference an OCR artifact in the Act reproduction ("ill Nigeria",
+ *    "10 the application"). Their side-notes come from that Act too — except
+ *    254A/254B, whose notes follow the naming pattern every other court in
+ *    the chapter uses, since the Act prints none for them.
+ *  - the Constitute Project's rev. 2011 text applies the 2010 alteration to
+ *    s.233(2) but drops s.233(3)-(6) altogether. Those four subsections are
+ *    restored here from the pre-alteration text, where all three sources
+ *    agree word for word.
+ *
+ * As in the other chapters, the printed original's own slips are kept as
+ * printed (e.g. s.231(5) "shall not re-appointment a person"; s.233(4) "the
+ * Court Appeal"; s.233(5) "in the Case of civil proceedings" and "an person
+ * having an interest"; s.233(6) "form the decisions").
+ *
+ * Chapters V and VI (The Legislature, The Executive — around 180 sections
  * combined) are not bundled yet; the Constitution screen says so rather
  * than implying completeness.
  */
@@ -491,18 +513,38 @@ export const constitutionChapters: ConstitutionChapterRow[] = [
     sort_order: 3,
   },
   {
+    id: 'chapter-7',
+    number: 7,
+    title_key: 'constitution.chapter.7.title',
+    sort_order: 4,
+  },
+  {
     id: 'chapter-8',
     number: 8,
     title_key: 'constitution.chapter.8.title',
-    sort_order: 4,
+    sort_order: 5,
   },
 ];
 
-const chapterSectionNumbers: Record<string, number[]> = {
+/**
+ * Section numbers per chapter, in the order they appear in the Constitution.
+ * Numbers are strings because section identifiers aren't all integers: the
+ * Third Alteration inserted ss. 254A-254F into Chapter VII, so `number` is a
+ * label, not a quantity — nothing sorts or does arithmetic on it (ordering is
+ * `sort_order`).
+ */
+const chapterSectionNumbers: Record<string, (number | string)[]> = {
   'chapter-1': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   'chapter-2': [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
   'chapter-3': [25, 26, 27, 28, 29, 30, 31, 32],
   'chapter-4': [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+  'chapter-7': [
+    230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+    249, 250, 251, 252, 253, 254, '254A', '254B', '254C', '254D', '254E', '254F', 255, 256, 257,
+    258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+    277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295,
+    296,
+  ],
   'chapter-8': [
     297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315,
     316, 317, 318, 319, 320,
@@ -515,7 +557,7 @@ export const constitutionSections: ConstitutionSectionRow[] = Object.entries(
   numbers.map((number, index) => ({
     id: `section-${number}`,
     chapter_id: chapterId,
-    number,
+    number: String(number),
     heading_key: `constitution.section.${number}.heading`,
     body_key: `constitution.section.${number}.body`,
     sort_order: index,

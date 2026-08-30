@@ -18,7 +18,7 @@ import { colors, spacing } from '@/theme';
  * titles (same `constitution.chapter.<n>.title` keys a bundled chapter
  * would use) so the app never implies completeness it doesn't have (see
  * AGENTS.md "Trust visible" principle). */
-const UNBUNDLED_CHAPTER_NUMBERS = [5, 6, 7];
+const UNBUNDLED_CHAPTER_NUMBERS = [5, 6];
 
 export function ConstitutionScreen() {
   const router = useRouter();

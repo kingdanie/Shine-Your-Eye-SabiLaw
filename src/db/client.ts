@@ -2,7 +2,7 @@ import * as SQLite from 'expo-sqlite';
 
 import { en } from '@/i18n/en';
 
-import { CONSTITUTION_FTS5_SQL, SCHEMA_SQL, SCHEMA_VERSION } from './schema';
+import { CONSTITUTION_FTS5_SQL, CONTENT_TABLES, SCHEMA_SQL, SCHEMA_VERSION } from './schema';
 import {
   constitutionChapters,
   constitutionSections,
@@ -51,9 +51,12 @@ async function seedIfNeeded(db: SQLite.SQLiteDatabase) {
     await db.runAsync('DELETE FROM topics');
     await db.runAsync('DELETE FROM qa_entries');
     await db.runAsync('DELETE FROM emergency_contacts');
-    await db.runAsync('DELETE FROM constitution_chapters');
-    await db.runAsync('DELETE FROM constitution_sections');
-    await db.runAsync('DELETE FROM constitution_search_plain');
+    // Dropped rather than emptied so an existing install picks up column-type
+    // changes too — see CONTENT_TABLES. Recreated by SCHEMA_SQL just below.
+    for (const table of CONTENT_TABLES) {
+      await db.runAsync(`DROP TABLE IF EXISTS ${table}`);
+    }
+    await db.execAsync(SCHEMA_SQL);
     // Table may not exist at all if fts5 isn't supported on this platform
     // (see openDb()) — caught locally so it can't roll back this whole
     // transaction's other deletes/inserts.

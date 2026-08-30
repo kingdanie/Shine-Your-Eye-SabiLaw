@@ -68,7 +68,8 @@ export interface ConstitutionChapterRow {
 export interface ConstitutionSectionRow {
   id: string;
   chapter_id: string;
-  number: number;
+  /** Display label, not a quantity — ss. 254A-254F aren't integers. */
+  number: string;
   heading_key: string;
   body_key: string;
   sort_order: number;

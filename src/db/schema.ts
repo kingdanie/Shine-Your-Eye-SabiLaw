@@ -84,7 +84,10 @@ CREATE TABLE IF NOT EXISTS constitution_chapters (
 CREATE TABLE IF NOT EXISTS constitution_sections (
   id TEXT PRIMARY KEY,
   chapter_id TEXT NOT NULL REFERENCES constitution_chapters(id),
-  number INTEGER NOT NULL,
+  -- TEXT, not INTEGER: not every section number is an integer. The Third
+  -- Alteration inserted ss. 254A-254F into Chapter VII, so this is a label
+  -- to display, never something to sort or count by (that's sort_order).
+  number TEXT NOT NULL,
   heading_key TEXT NOT NULL,
   body_key TEXT NOT NULL,
   sort_order INTEGER NOT NULL DEFAULT 0
@@ -99,7 +102,22 @@ CREATE TABLE IF NOT EXISTS constitution_search_plain (
 `;
 
 /** Bump when SCHEMA_SQL or seed content shape changes, to force a reseed. */
-export const SCHEMA_VERSION = '3';
+export const SCHEMA_VERSION = '4';
+
+/**
+ * Dropped (and recreated from SCHEMA_SQL) whenever SCHEMA_VERSION changes —
+ * see client.ts seedIfNeeded(). Deleting the rows isn't enough on its own:
+ * `CREATE TABLE IF NOT EXISTS` leaves an already-created table with its old
+ * column types, so on an upgrade constitution_sections.number would keep
+ * INTEGER affinity and silently coerce '230' back to a number while '254A'
+ * stayed text. These tables hold bundled content only — user activity lives
+ * in saved/recently_viewed, which are never dropped.
+ */
+export const CONTENT_TABLES = [
+  'constitution_search_plain',
+  'constitution_sections',
+  'constitution_chapters',
+] as const;
 
 /** Created/populated separately from SCHEMA_SQL, wrapped in its own
  * try/catch — see the big comment above. Only takes effect where the
