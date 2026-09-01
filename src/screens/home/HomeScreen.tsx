@@ -5,7 +5,7 @@ import React, { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppText, Card, InquiryRow, TopicCard } from '@/components/ui';
+import { AppText, Button, Card, InquiryRow, TopicCard } from '@/components/ui';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FloatingHelpButton } from '@/components/navigation/FloatingHelpButton';
 import { useProfile } from '@/context';
@@ -149,7 +149,7 @@ export function HomeScreen() {
 
         <Card style={styles.banner}>
           <View style={styles.bannerIcon}>
-            <Ionicons name="shield-checkmark" size={22} color={colors.onPrimary} />
+            <Ionicons name="shield-checkmark-outline" size={24} color={colors.primary} />
           </View>
           <View style={styles.bannerText}>
             <AppText variant="labelMd" color={colors.primary}>
@@ -159,11 +159,12 @@ export function HomeScreen() {
               {t('home.bannerBody')}
             </AppText>
           </View>
-          <Pressable onPress={() => router.push('/help')} accessibilityRole="button">
-            <AppText variant="labelSm" color={colors.primary}>
-              {t('home.bannerCta')}
-            </AppText>
-          </Pressable>
+          <Button
+            label={t('home.bannerCta')}
+            onPress={() => router.push('/help')}
+            fullWidth={false}
+            style={styles.bannerCta}
+          />
         </Card>
 
         <View style={styles.sectionHeaderRow}>
@@ -265,9 +266,17 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: radius.full,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.surfaceCard,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bannerCta: {
+    // Button's default 56px is the full-width primary height; this one sits
+    // inside a row, so it drops to the 44px accessibility floor — no lower.
+    minHeight: 44,
+    paddingHorizontal: spacing.md,
   },
   bannerText: {
     flex: 1,
