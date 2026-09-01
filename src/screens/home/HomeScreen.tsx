@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -12,6 +13,9 @@ import { useTranslation } from '@/i18n';
 import { getInterests } from '@/storage';
 import { colors, radius, spacing } from '@/theme';
 import { relativeTime } from '@/utils/relativeTime';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const heroIllustration = require('@/assets/images/Sabilaw.webp');
 
 export function HomeScreen() {
   const router = useRouter();
@@ -67,12 +71,26 @@ export function HomeScreen() {
           </View>
         </View>
 
-        <AppText variant="headlineMd" style={styles.greeting}>
-          {t('home.greeting', { name: greetingName })}
-        </AppText>
-        <AppText variant="bodyMd" color={colors.textSecondary}>
-          {t('home.subtitle')}
-        </AppText>
+        <View style={styles.hero}>
+          <View style={styles.heroText}>
+            <AppText variant="headlineMd" style={styles.greeting}>
+              {t('home.greeting', { name: greetingName })}
+            </AppText>
+            <AppText variant="bodyMd" color={colors.textSecondary}>
+              {t('home.subtitle')}
+            </AppText>
+          </View>
+          {/* Decorative only — the greeting beside it carries the meaning, so it stays
+              out of the screen-reader order. */}
+          <Image
+            source={heroIllustration}
+            style={styles.heroImage}
+            contentFit="contain"
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          />
+        </View>
 
         <Pressable
           onPress={() => router.push('/ask')}
@@ -198,8 +216,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  hero: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  heroText: {
+    flex: 1,
+    gap: spacing.xs,
+  },
   greeting: {
     marginTop: spacing.sm,
+  },
+  heroImage: {
+    width: '34%',
+    // Matches the source artwork's 1389×944 aspect so nothing letterboxes.
+    aspectRatio: 1389 / 944,
   },
   searchBar: {
     flexDirection: 'row',
