@@ -16,7 +16,15 @@ let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 /** Opens (and lazily migrates/seeds) the single app database. Safe to call repeatedly. */
 export function getDb(): Promise<SQLite.SQLiteDatabase> {
   if (!dbPromise) {
-    dbPromise = openDb();
+    // Drop the memoized promise if the open fails, so a later call can genuinely
+    // retry. Without this, one transient failure is cached as a rejected promise
+    // and every subsequent getDb() for the rest of the session fails too — which
+    // matters because the common web failure (OPFS access handles still held by a
+    // stale tab or a pre-refresh worker) clears on its own a moment later.
+    dbPromise = openDb().catch((error) => {
+      dbPromise = null;
+      throw error;
+    });
   }
   return dbPromise;
 }

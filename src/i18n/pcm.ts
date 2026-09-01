@@ -99,4 +99,9 @@ export const pcm: Record<string, string> = {
   'constitution.searchPlaceholder': 'Search the Constitution...',
   'constitution.availableHeading': 'E dey available now',
   'constitution.comingSoonHeading': 'E dey come soon',
+
+  'appGate.dbErrorTitle': 'The app no fit start finish',
+  'appGate.dbErrorBody':
+    'We no fit open your saved content right now. Nothing lost — try am again small time.',
+  'appGate.dbErrorRetry': 'Try am again',
 };
