@@ -134,7 +134,7 @@ export function HomeScreen() {
           onPress={() => router.push('/constitution')}
           accessibilityLabel={t('home.constitutionCardTitle')}>
           <View style={styles.bannerIcon}>
-            <Ionicons name="book" size={22} color={colors.onPrimary} />
+            <Ionicons name="book-outline" size={24} color={colors.primary} />
           </View>
           <View style={styles.bannerText}>
             <AppText variant="labelMd" color={colors.primary}>
@@ -147,7 +147,7 @@ export function HomeScreen() {
           <Ionicons name="chevron-forward" size={18} color={colors.primary} />
         </Card>
 
-        <Card style={styles.banner}>
+        <Card style={[styles.banner, styles.bannerTinted]}>
           <View style={styles.bannerIcon}>
             <Ionicons name="shield-checkmark-outline" size={24} color={colors.primary} />
           </View>
@@ -271,6 +271,9 @@ const styles = StyleSheet.create({
     borderColor: colors.borderSubtle,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bannerTinted: {
+    backgroundColor: colors.primaryTint,
   },
   bannerCta: {
     // Button's default 56px is the full-width primary height; this one sits
