@@ -285,6 +285,10 @@ const styles = StyleSheet.create({
     // inside a row, so it drops to the 44px accessibility floor — no lower.
     minHeight: 44,
     paddingHorizontal: spacing.md,
+    // Button's default radius.xl (24) exceeds half this button's height, so it
+    // renders as a full pill. The design wants a rounded rectangle with visibly
+    // straight sides, which is the "md" step on the shape scale.
+    borderRadius: radius.md,
   },
   bannerText: {
     flex: 1,
