@@ -130,7 +130,7 @@ export function HomeScreen() {
         </View>
 
         <Card
-          style={styles.banner}
+          style={[styles.banner, styles.bannerFirst]}
           onPress={() => router.push('/constitution')}
           accessibilityLabel={t('home.constitutionCardTitle')}>
           <View style={styles.bannerIcon}>
@@ -260,6 +260,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    // No marginTop: the scroll container's own `gap` already separates these,
+    // and adding both is what made the two banners sit 32px apart.
+  },
+  // Only the first banner needs extra air, to break from the topic grid above.
+  bannerFirst: {
     marginTop: spacing.md,
   },
   bannerIcon: {
