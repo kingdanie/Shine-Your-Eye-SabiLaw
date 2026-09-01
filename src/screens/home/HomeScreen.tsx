@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText, Card, IconButton, InquiryRow, TopicCard } from '@/components/ui';
@@ -17,10 +17,30 @@ import { relativeTime } from '@/utils/relativeTime';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const heroIllustration = require('@/assets/images/Sabilaw.webp');
 
+/**
+ * Topic cards go three-up on tablets/web and two-up on phones. Three columns on
+ * a 360dp screen leaves ~48dp of content width inside Card's padding — not
+ * enough for a one-word title, let alone the description — and phones are the
+ * primary target, so the narrow case takes priority over matching the wide
+ * layout everywhere.
+ */
+const WIDE_LAYOUT_MIN_WIDTH = 600;
+
+/**
+ * Cell width as an exact-enough fraction of the row. Rounded *down* on purpose:
+ * `100 / 3` stringifies as "33.333333333333336%", and three of those sum to
+ * over 100%, which wraps the third card onto its own row.
+ */
+function cellWidth(columns: number): `${number}%` {
+  return `${Math.floor((100 / columns) * 1000) / 1000}%`;
+}
+
 export function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { profile } = useProfile();
+  const { width } = useWindowDimensions();
+  const columns = width >= WIDE_LAYOUT_MIN_WIDTH ? 3 : 2;
   const [topics, setTopics] = useState<TopicRow[]>([]);
   const [recent, setRecent] = useState<QAEntryWithActivity[]>([]);
 
@@ -110,7 +130,7 @@ export function HomeScreen() {
         </View>
         <View style={styles.topicGrid}>
           {topics.map((topic) => (
-            <View key={topic.id} style={styles.topicCell}>
+            <View key={topic.id} style={[styles.topicCell, { width: cellWidth(columns) }]}>
               <TopicCard
                 icon={topic.icon as keyof typeof Ionicons.glyphMap}
                 label={t(topic.label_key)}
@@ -257,10 +277,19 @@ const styles = StyleSheet.create({
   topicGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.md,
+    // Gutters come from per-cell padding rather than `gap`, because a
+    // percentage cell width can't subtract a gap — cells have to be exact
+    // fractions of the row for 3-up to fit. The negative margins pull the
+    // outer gutters back off so the cards still line up with the container
+    // margin and the section below.
+    marginHorizontal: -spacing.sm,
+    marginBottom: -spacing.md,
   },
   topicCell: {
-    width: '47%',
+    // Cross-axis stretch is the default, and it is what makes every card on a
+    // row take the height of the tallest one — don't set a height here.
+    paddingHorizontal: spacing.sm,
+    paddingBottom: spacing.md,
   },
   banner: {
     flexDirection: 'row',
