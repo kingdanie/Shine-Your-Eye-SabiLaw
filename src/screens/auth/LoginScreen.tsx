@@ -135,7 +135,11 @@ const styles = StyleSheet.create({
     aspectRatio: 1860 / 751,
   },
   content: {
-    paddingHorizontal: spacing.containerMargin,
+    // Wider than the app-wide containerMargin on purpose: the sign-in form is a
+    // single narrow column, and the extra inset keeps the 64px fields from
+    // running edge to edge.
+    paddingHorizontal: spacing.lg * 2,
+    paddingTop: spacing.xl,
     paddingBottom: spacing.xl,
     gap: spacing.md,
   },
