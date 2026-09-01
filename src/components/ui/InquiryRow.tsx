@@ -16,22 +16,43 @@ interface InquiryRowProps {
   onPress: () => void;
 }
 
-/** One row in the Saved/History/Recent-Activity lists — icon, question, status + time, bookmark. */
-export function InquiryRow({ icon, question, statusLabel, timeLabel, isSaved, onPress }: InquiryRowProps) {
+/** One card in the Saved/History/Recent-Activity lists — icon, question, status + time, bookmark. */
+export function InquiryRow({
+  icon,
+  question,
+  statusLabel,
+  timeLabel,
+  isSaved,
+  onPress,
+}: InquiryRowProps) {
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={question}
+      accessibilityLabel={`${question}. ${statusLabel}. ${timeLabel}`}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
-      <IconBadge name={icon} size={44} iconSize={20} />
+      <IconBadge
+        name={icon}
+        size={44}
+        iconSize={20}
+        backgroundColor={colors.surfaceContainerLow}
+      />
       <View style={styles.content}>
         <AppText variant="labelMd" numberOfLines={2}>
           {question}
         </AppText>
-        <AppText variant="caption" color={colors.textSecondary}>
-          {statusLabel} · {timeLabel}
-        </AppText>
+        <View style={styles.metaRow}>
+          <Ionicons name="checkmark-circle" size={14} color={colors.primary} />
+          <AppText variant="caption" color={colors.textSecondary}>
+            {statusLabel}
+          </AppText>
+          <AppText variant="caption" color={colors.textMuted}>
+            ·
+          </AppText>
+          <AppText variant="caption" color={colors.textSecondary}>
+            {timeLabel}
+          </AppText>
+        </View>
       </View>
       <Ionicons
         name={isSaved ? 'bookmark' : 'bookmark-outline'}
@@ -48,14 +69,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.containerMargin,
+    padding: spacing.md,
     borderRadius: radius.lg,
+    backgroundColor: colors.surfaceCard,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
     minHeight: 44,
   },
   content: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    // The status line wraps rather than clipping when font scaling is turned up.
+    flexWrap: 'wrap',
   },
   pressed: {
     backgroundColor: colors.surfaceContainerLow,

@@ -7,6 +7,8 @@
  */
 export const pcm: Record<string, string> = {
   'common.appName': 'Know Your Right',
+  'common.notifications': 'Notifications',
+  'common.openProfile': 'Open your profile',
   'common.skip': 'Skip am',
   'common.next': 'Next',
   'common.back': 'Go back',

@@ -5,7 +5,8 @@ import React, { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppText, Card, IconButton, InquiryRow, TopicCard } from '@/components/ui';
+import { AppText, Card, InquiryRow, TopicCard } from '@/components/ui';
+import { AppHeader } from '@/components/navigation/AppHeader';
 import { FloatingHelpButton } from '@/components/navigation/FloatingHelpButton';
 import { useProfile } from '@/context';
 import { getRecentlyViewed, getTopics, type QAEntryWithActivity, type TopicRow } from '@/db';
@@ -76,20 +77,7 @@ export function HomeScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <View style={styles.logoRow}>
-            <Ionicons name="business-outline" size={22} color={colors.primary} />
-            <AppText variant="headlineSm">{t('common.appName')}</AppText>
-          </View>
-          <View style={styles.headerActions}>
-            <IconButton name="notifications-outline" accessibilityLabel="Notifications" badge={recent.length > 0} />
-            <Pressable onPress={() => router.push('/(tabs)/profile')} accessibilityLabel="Open profile">
-              <View style={styles.avatar}>
-                <Ionicons name="person" size={18} color={colors.onPrimary} />
-              </View>
-            </Pressable>
-          </View>
-        </View>
+        <AppHeader hasNotifications={recent.length > 0} />
 
         <View style={styles.hero}>
           <View style={styles.heroText}>
@@ -211,30 +199,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.containerMargin,
     paddingBottom: spacing.xl * 2,
     gap: spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: spacing.sm,
-  },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.full,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   hero: {
     flexDirection: 'row',

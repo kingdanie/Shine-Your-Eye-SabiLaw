@@ -7,6 +7,8 @@ export const en: Record<string, string> = {
   // Chrome
   // ---------------------------------------------------------------------
   'common.appName': 'Know Your Right',
+  'common.notifications': 'Notifications',
+  'common.openProfile': 'Open profile',
   'common.skip': 'Skip',
   'common.next': 'Next',
   'common.back': 'Back',
