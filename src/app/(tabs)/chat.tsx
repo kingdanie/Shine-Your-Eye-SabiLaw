@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { MyLegalInquiriesScreen } from '@/screens/inquiries/MyLegalInquiriesScreen';
+import { AskScreen } from '@/screens/ask/AskScreen';
 
-export default function SavedRoute() {
-  return <MyLegalInquiriesScreen initialSegment="saved" />;
+export default function ChatRoute() {
+  return <AskScreen presentation="tab" />;
 }

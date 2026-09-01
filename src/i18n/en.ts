@@ -9,6 +9,11 @@ export const en: Record<string, string> = {
   'common.appName': 'Know Your Right',
   'common.notifications': 'Notifications',
   'common.openProfile': 'Open profile',
+
+  'tabs.home': 'Home',
+  'tabs.chat': 'Chat',
+  'tabs.history': 'History',
+  'tabs.profile': 'Profile',
   'common.skip': 'Skip',
   'common.next': 'Next',
   'common.back': 'Back',

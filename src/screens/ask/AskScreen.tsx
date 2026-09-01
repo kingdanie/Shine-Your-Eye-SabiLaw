@@ -11,7 +11,21 @@ import { colors, spacing } from '@/theme';
 
 type Status = 'idle' | 'loading' | 'no-results';
 
-export function AskScreen() {
+interface AskScreenProps {
+  /**
+   * How this screen is being shown, which changes two things:
+   *
+   * - `modal` (the default, via `/ask`): sits over another screen, so it offers
+   *   a close control and *replaces* itself with the answer — the modal has
+   *   done its job once an answer is on screen.
+   * - `tab`: it is the Chat tab's root. There is nothing to dismiss to, so no
+   *   close control, and the answer is *pushed* so the tab isn't torn out from
+   *   under the tab bar.
+   */
+  presentation?: 'modal' | 'tab';
+}
+
+export function AskScreen({ presentation = 'modal' }: AskScreenProps) {
   const router = useRouter();
   const { t, language } = useTranslation();
   const [query, setQuery] = useState('');
@@ -26,7 +40,16 @@ export function AskScreen() {
     await new Promise((resolve) => setTimeout(resolve, 700));
     const results = await searchQA(query, t);
     if (results.length > 0) {
-      router.replace(`/answer/${results[0].id}`);
+      const answer = `/answer/${results[0].id}` as const;
+      if (presentation === 'modal') {
+        router.replace(answer);
+      } else {
+        router.push(answer);
+        // Leave the tab on a clean slate, so coming back to Chat starts a new
+        // question rather than re-showing the one already answered.
+        setQuery('');
+      }
+      setStatus('idle');
     } else {
       setStatus('no-results');
     }
@@ -43,10 +66,16 @@ export function AskScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <TopBar
-        onClose={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/home'))}
-      />
+    // As a tab the bottom inset belongs to the tab bar, so claiming it here
+    // would pad the content twice.
+    <SafeAreaView
+      style={styles.container}
+      edges={presentation === 'modal' ? ['top', 'bottom'] : ['top']}>
+      {presentation === 'modal' && (
+        <TopBar
+          onClose={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/home'))}
+        />
+      )}
 
       {status === 'loading' ? (
         <View style={styles.centerFill}>
