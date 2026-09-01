@@ -11,6 +11,12 @@ interface CardProps {
   /** "Fixed/Statutory Corners" — use for citation/legal-source content, per spec. */
   statutory?: boolean;
   noPadding?: boolean;
+  /**
+   * Stretch to fill the parent's height. Needed for pressable cards in a grid:
+   * `style` lands on the inner view, but it's the Pressable wrapper that sits
+   * in the layout, and it sizes to its content unless told otherwise.
+   */
+  fill?: boolean;
 }
 
 /** The "pillowy" 24px-radius, soft-shadow container used for most surfaces. */
@@ -21,6 +27,7 @@ export function Card({
   accessibilityLabel,
   statutory,
   noPadding,
+  fill,
 }: CardProps) {
   const content = (
     <View
@@ -28,6 +35,7 @@ export function Card({
         styles.base,
         statutory ? styles.statutory : styles.approachable,
         !noPadding && styles.padding,
+        fill && styles.fill,
         style,
       ]}>
       {children}
@@ -41,7 +49,7 @@ export function Card({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={({ pressed }) => pressed && styles.pressed}>
+      style={({ pressed }) => [fill && styles.fill, pressed && styles.pressed]}>
       {content}
     </Pressable>
   );
@@ -63,6 +71,9 @@ const styles = StyleSheet.create({
   },
   padding: {
     padding: spacing.lg,
+  },
+  fill: {
+    flex: 1,
   },
   pressed: {
     transform: [{ scale: 0.98 }],

@@ -1010,4 +1010,9 @@ export const en: Record<string, string> = {
   'emergency.legal-aid-council.description': 'Free legal assistance for those who qualify.',
   'emergency.lawyer-directory.name': 'Find a Lawyer',
   'emergency.lawyer-directory.description': 'Get matched with a lawyer for paid legal support.',
+
+  'appGate.dbErrorTitle': "The app couldn't finish starting",
+  'appGate.dbErrorBody':
+    "Your saved content couldn't be opened just now. Nothing has been lost — try again in a moment.",
+  'appGate.dbErrorRetry': 'Try again',
 };
