@@ -60,11 +60,11 @@ export function LoginScreen() {
           </AppText>
 
           <View style={styles.fieldGroup}>
-            <AppText variant="labelSm">{t('auth.login.labelIdentifier')}</AppText>
+            <AppText variant="labelSm">{t('auth.labelIdentifier')}</AppText>
             <TextField
               icon="person-outline"
-              placeholder={t('auth.login.placeholderIdentifier')}
-              accessibilityLabel={t('auth.login.labelIdentifier')}
+              placeholder={t('auth.placeholderIdentifier')}
+              accessibilityLabel={t('auth.labelIdentifier')}
               value={identifier}
               onChangeText={setIdentifier}
               autoCapitalize="none"

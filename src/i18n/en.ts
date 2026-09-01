@@ -51,14 +51,14 @@ export const en: Record<string, string> = {
 
   'auth.register.title': 'Join the Community',
   'auth.register.subtitle': 'Secure, private, and always available.',
-  'auth.register.placeholder': 'Phone Number or Email',
+  // Shared by both auth screens — the identifier field is the same on each.
+  'auth.labelIdentifier': 'Phone or Email',
+  'auth.placeholderIdentifier': 'Enter your details',
   'auth.register.terms': 'By joining, you agree to our Terms of Service and Privacy Policy.',
   'auth.register.haveAccount': 'Already have an account?',
   'auth.login.title': 'Welcome Back',
   'auth.login.subtitle': 'Sign in to access your saved history.',
-  'auth.login.labelIdentifier': 'Phone or Email',
   'auth.login.labelPassword': 'Password',
-  'auth.login.placeholderIdentifier': 'Enter your details',
   'auth.login.placeholderPassword': 'Enter your password',
   'auth.login.forgotPassword': 'Forgot password?',
   'auth.login.noAccount': "Don't have an account?",
