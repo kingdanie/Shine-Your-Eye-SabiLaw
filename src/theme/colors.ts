@@ -69,6 +69,10 @@ export const palette = {
   // App-specific additions from the spec, outside the base M3 role set.
   emergencyCrimson: '#D9455F',
   guardianMuted: '#829A8E',
+  // The lightest green wash — for surfaces that should read as "brand" without
+  // competing with a white card. Deliberately far lighter than
+  // secondaryContainer (#cbe6d6), which is a fill, not a wash.
+  greenTint: '#eff7f2',
 } as const;
 
 /**
@@ -98,6 +102,13 @@ export const colors = {
   screenBackground: palette.background,
   surfaceInput: palette.surfaceContainerLow,
   surfaceCard: palette.surfaceContainerLowest,
+
+  /**
+   * Background-only green wash (see the accessibility notes: tints never carry
+   * text color). Verified against the text tokens used on it — primary 6.07:1,
+   * textSecondary 8.52:1, textPrimary 15.70:1, all clearing WCAG-AA.
+   */
+  primaryTint: palette.greenTint,
 
   brandAccent: palette.primaryContainer, // the vivid "Nigerian Green" brand moment color
   liveAccent: palette.tertiaryFixedDim, // pulse / active / "live" indicator

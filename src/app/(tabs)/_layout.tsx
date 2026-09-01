@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform, type ColorValue } from 'react-native';
 
+import { useTranslation } from '@/i18n';
 import { colors, typography } from '@/theme';
 
 type IconName = keyof typeof Ionicons.glyphMap;
@@ -14,6 +15,8 @@ function tabIcon(active: IconName, inactive: IconName) {
 }
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
@@ -30,19 +33,25 @@ export default function TabsLayout() {
       }}>
       <Tabs.Screen
         name="home"
-        options={{ title: 'Home', tabBarIcon: tabIcon('home', 'home-outline') }}
+        options={{ title: t('tabs.home'), tabBarIcon: tabIcon('home', 'home-outline') }}
       />
       <Tabs.Screen
-        name="saved"
-        options={{ title: 'Saved', tabBarIcon: tabIcon('bookmark', 'bookmark-outline') }}
+        name="chat"
+        options={{
+          title: t('tabs.chat'),
+          tabBarIcon: tabIcon('chatbubble-ellipses', 'chatbubble-ellipses-outline'),
+        }}
       />
       <Tabs.Screen
         name="history"
-        options={{ title: 'History', tabBarIcon: tabIcon('time', 'time-outline') }}
+        options={{ title: t('tabs.history'), tabBarIcon: tabIcon('time', 'time-outline') }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: 'Profile', tabBarIcon: tabIcon('person-circle', 'person-circle-outline') }}
+        options={{
+          title: t('tabs.profile'),
+          tabBarIcon: tabIcon('person-circle', 'person-circle-outline'),
+        }}
       />
     </Tabs>
   );

@@ -7,6 +7,13 @@ export const en: Record<string, string> = {
   // Chrome
   // ---------------------------------------------------------------------
   'common.appName': 'Know Your Right',
+  'common.notifications': 'Notifications',
+  'common.openProfile': 'Open profile',
+
+  'tabs.home': 'Home',
+  'tabs.chat': 'Chat',
+  'tabs.history': 'History',
+  'tabs.profile': 'Profile',
   'common.skip': 'Skip',
   'common.next': 'Next',
   'common.back': 'Back',
@@ -44,13 +51,15 @@ export const en: Record<string, string> = {
 
   'auth.register.title': 'Join the Community',
   'auth.register.subtitle': 'Secure, private, and always available.',
-  'auth.register.placeholder': 'Phone Number or Email',
+  // Shared by both auth screens — the identifier field is the same on each.
+  'auth.labelIdentifier': 'Phone or Email',
+  'auth.placeholderIdentifier': 'Enter your details',
   'auth.register.terms': 'By joining, you agree to our Terms of Service and Privacy Policy.',
   'auth.register.haveAccount': 'Already have an account?',
   'auth.login.title': 'Welcome Back',
   'auth.login.subtitle': 'Sign in to access your saved history.',
-  'auth.login.placeholderIdentifier': 'Phone or Email',
-  'auth.login.placeholderPassword': 'Password',
+  'auth.login.labelPassword': 'Password',
+  'auth.login.placeholderPassword': 'Enter your password',
   'auth.login.forgotPassword': 'Forgot password?',
   'auth.login.noAccount': "Don't have an account?",
   'auth.login.joinLink': 'Join the Community',

@@ -5,7 +5,8 @@ import React, { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppText, Card, IconButton, InquiryRow, TopicCard } from '@/components/ui';
+import { AppText, Button, Card, InquiryRow, TopicCard } from '@/components/ui';
+import { AppHeader } from '@/components/navigation/AppHeader';
 import { FloatingHelpButton } from '@/components/navigation/FloatingHelpButton';
 import { useProfile } from '@/context';
 import { getRecentlyViewed, getTopics, type QAEntryWithActivity, type TopicRow } from '@/db';
@@ -76,20 +77,7 @@ export function HomeScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <View style={styles.logoRow}>
-            <Ionicons name="business-outline" size={22} color={colors.primary} />
-            <AppText variant="headlineSm">{t('common.appName')}</AppText>
-          </View>
-          <View style={styles.headerActions}>
-            <IconButton name="notifications-outline" accessibilityLabel="Notifications" badge={recent.length > 0} />
-            <Pressable onPress={() => router.push('/(tabs)/profile')} accessibilityLabel="Open profile">
-              <View style={styles.avatar}>
-                <Ionicons name="person" size={18} color={colors.onPrimary} />
-              </View>
-            </Pressable>
-          </View>
-        </View>
+        <AppHeader hasNotifications={recent.length > 0} />
 
         <View style={styles.hero}>
           <View style={styles.heroText}>
@@ -142,11 +130,11 @@ export function HomeScreen() {
         </View>
 
         <Card
-          style={styles.banner}
+          style={[styles.banner, styles.bannerFirst]}
           onPress={() => router.push('/constitution')}
           accessibilityLabel={t('home.constitutionCardTitle')}>
           <View style={styles.bannerIcon}>
-            <Ionicons name="book" size={22} color={colors.onPrimary} />
+            <Ionicons name="book-outline" size={24} color={colors.primary} />
           </View>
           <View style={styles.bannerText}>
             <AppText variant="labelMd" color={colors.primary}>
@@ -159,9 +147,9 @@ export function HomeScreen() {
           <Ionicons name="chevron-forward" size={18} color={colors.primary} />
         </Card>
 
-        <Card style={styles.banner}>
+        <Card style={[styles.banner, styles.bannerTinted]}>
           <View style={styles.bannerIcon}>
-            <Ionicons name="shield-checkmark" size={22} color={colors.onPrimary} />
+            <Ionicons name="shield-checkmark-outline" size={24} color={colors.primary} />
           </View>
           <View style={styles.bannerText}>
             <AppText variant="labelMd" color={colors.primary}>
@@ -171,11 +159,12 @@ export function HomeScreen() {
               {t('home.bannerBody')}
             </AppText>
           </View>
-          <Pressable onPress={() => router.push('/help')} accessibilityRole="button">
-            <AppText variant="labelSm" color={colors.primary}>
-              {t('home.bannerCta')}
-            </AppText>
-          </Pressable>
+          <Button
+            label={t('home.bannerCta')}
+            onPress={() => router.push('/help')}
+            fullWidth={false}
+            style={styles.bannerCta}
+          />
         </Card>
 
         <View style={styles.sectionHeaderRow}>
@@ -211,30 +200,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.containerMargin,
     paddingBottom: spacing.xl * 2,
     gap: spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: spacing.sm,
-  },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.full,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   hero: {
     flexDirection: 'row',
@@ -295,15 +260,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    // No marginTop: the scroll container's own `gap` already separates these,
+    // and adding both is what made the two banners sit 32px apart.
+  },
+  // Only the first banner needs extra air, to break from the topic grid above.
+  bannerFirst: {
     marginTop: spacing.md,
   },
   bannerIcon: {
     width: 44,
     height: 44,
     borderRadius: radius.full,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.surfaceCard,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bannerTinted: {
+    backgroundColor: colors.primaryTint,
+  },
+  bannerCta: {
+    // Button's default 56px is the full-width primary height; this one sits
+    // inside a row, so it drops to the 44px accessibility floor — no lower.
+    minHeight: 44,
+    paddingHorizontal: spacing.md,
+    // Button's default radius.xl (24) exceeds half this button's height, so it
+    // renders as a full pill. The design wants a rounded rectangle with visibly
+    // straight sides, which is the "md" step on the shape scale.
+    borderRadius: radius.md,
   },
   bannerText: {
     flex: 1,
