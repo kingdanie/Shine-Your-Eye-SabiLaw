@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image, type ImageSource } from 'expo-image';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,7 +9,13 @@ import { useTranslation } from '@/i18n';
 import { colors, radius, spacing } from '@/theme';
 
 interface OnboardingLayoutProps {
-  illustrationIcon: keyof typeof Ionicons.glyphMap;
+  /** Glyph fallback for steps that don't have bespoke artwork yet. */
+  illustrationIcon?: keyof typeof Ionicons.glyphMap;
+  /**
+   * Bespoke artwork for this step. Takes precedence over `illustrationIcon`,
+   * and renders without the tinted circle — the artwork carries its own.
+   */
+  illustration?: ImageSource;
   activeIndex: number;
   stepCount: number;
   onSkip?: () => void;
@@ -21,6 +28,7 @@ interface OnboardingLayoutProps {
 /** Shared chrome for the 3 onboarding steps: illustration, skip, content, dots, CTA. */
 export function OnboardingLayout({
   illustrationIcon,
+  illustration,
   activeIndex,
   stepCount,
   onSkip,
@@ -39,9 +47,24 @@ export function OnboardingLayout({
         </View>
       )}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.illustrationWrap}>
-          <Ionicons name={illustrationIcon} size={96} color={colors.primary} />
-        </View>
+        {illustration ? (
+          // Decorative: the step's title and body carry the meaning, so it stays
+          // out of the screen-reader order.
+          <Image
+            source={illustration}
+            style={styles.illustrationImage}
+            contentFit="contain"
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          />
+        ) : (
+          illustrationIcon && (
+            <View style={styles.illustrationWrap}>
+              <Ionicons name={illustrationIcon} size={96} color={colors.primary} />
+            </View>
+          )
+        )}
         {children}
       </ScrollView>
       <View style={styles.footer}>
@@ -70,6 +93,17 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: spacing.containerMargin,
     gap: spacing.md,
+  },
+  illustrationImage: {
+    alignSelf: 'center',
+    // Caps at the icon-circle's 200px on a phone but scales down on short
+    // screens rather than pushing the CTA off the bottom.
+    width: '100%',
+    maxWidth: 260,
+    // Matches the source artwork's 1252x957 aspect so nothing letterboxes.
+    aspectRatio: 1252 / 957,
+    marginTop: spacing.lg,
+    marginBottom: spacing.lg,
   },
   illustrationWrap: {
     alignItems: 'center',

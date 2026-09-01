@@ -9,6 +9,9 @@ import { colors, spacing } from '@/theme';
 
 import { OnboardingLayout } from './OnboardingLayout';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const stepIllustration = require('@/assets/images/onboarding-step-1.webp');
+
 export function OnboardingStep1() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -20,7 +23,7 @@ export function OnboardingStep1() {
 
   return (
     <OnboardingLayout
-      illustrationIcon="book-outline"
+      illustration={stepIllustration}
       activeIndex={0}
       stepCount={3}
       onSkip={skip}
