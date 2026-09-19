@@ -1,101 +1,301 @@
-# Expo HAS CHANGED
+# AGENTS.md
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code. Expo's APIs move fast between SDKs — do not rely on memorized/training-era Expo knowledge for anything beyond basic JS/React syntax.
+Instructions for AI coding agents working in this project. This is the cross-tool
+entry point: Codex, OpenCode, Cursor, GitHub Copilot, Gemini CLI, Aider, Zed,
+Windsurf, and others read `AGENTS.md`. Claude Code reads `CLAUDE.md`, which imports
+this file, so there is a single source of truth.
 
-## Project Overview
+Claude Code, Codex, and every other AI tool must not add AI attribution to
+commits or pull requests, including AI `Co-Authored-By` trailers or generated-by
+signatures. Preserve genuine human attribution. See
+[Commit and PR attribution](blueprint/context/ai-interaction.md#commit-and-pr-attribution)
+for optional tool settings.
 
-A legal-literacy app for Nigerians (plain-language Q&A grounded in Nigerian statutes, browse-by-topic, emergency/legal help). Expo + TypeScript, targeting iOS, Android, and web from one codebase. See the PRD for product requirements and design principles (radical simplicity, plain language, ≤2 taps to help, warm/calm/non-alarming tone).
+## What this is
 
-**The two constraints below are non-negotiable product requirements, not preferences** — the primary audience is on low-end Android devices and slow/expensive Nigerian mobile data:
+SabiLaw / Shine Your Eye is a temporary-name mobile legal-literacy app for Nigerians. It makes legal rights easier to understand through plain-language guidance, offline Constitution content, citations, and reachable emergency-help information.
 
-- **Offline-first.** Previously viewed content must work with no connection, and the app must say so honestly (never silently fail, never claim freshness it doesn't have).
-- **Very light.** Every dependency, asset, and API choice is filtered through bundle size and runtime cost. When in doubt, choose the lighter option even at some convenience cost.
+This project is built with the **AI Blueprint**, a workflow layer, not an
+app skeleton. To start a new project, scaffold the app first in an empty folder
+(create-next-app, Vite, etc.), then overlay these files on top. Never run a
+framework scaffolder inside a directory that already holds the blueprint files
+(`AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `blueprint/`); it fails
+because the directory isn't empty.
 
-## Architecture / Folder Structure
+The workflow is defined by the local skills and context files below.
 
+## Proportional engineering
+
+Build for established requirements, not hypothetical scale, threats, or future
+flexibility. Reuse existing code, the standard library, native platform features,
+and installed dependencies before adding machinery.
+
+- Unknown scale or extensibility defaults to the smaller reversible design. Do
+  not infer enterprise, multi-tenant, hostile-user, or compliance requirements.
+- Derive trust and data-integrity boundaries from actual reachability: untrusted
+  input, auth/session/ownership, shared persisted data, destructive operations,
+  payments, secrets, and sensitive data.
+- Ask only when an unknown materially changes behavior, architecture, persisted
+  data, interoperability, a real security boundary, or cost. Otherwise choose the
+  simplest repository-native implementation.
+- Add an abstraction, dependency, service, configuration surface, compatibility
+  layer, or security mechanism only for a current requirement.
+- Simplicity never removes real trust-boundary validation, data-loss prevention,
+  accessibility, explicit security requirements, configured tests, or project rules.
+- Stack-specific template standards apply only when the project uses that stack.
+
+## Read these when relevant
+
+- `blueprint/config.json` - deterministic project workflow settings
+- `blueprint/context/project-overview.md` - the project's source of truth
+- `blueprint/context/coding-standards.md` - read before changing code
+- `blueprint/context/ai-interaction.md` - read when running the Blueprint workflow
+- `blueprint/context/current-feature.md` - the one feature, fix, or rollback being built right now
+
+Reuse relevant context already loaded in the session. Claude Code imports only
+this file; its Blueprint skills load the other files on demand.
+
+## Project configuration
+
+`blueprint/config.json` is the user-owned, machine-readable workflow policy for
+this project. Workflow skills read the relevant settings before acting. A
+missing file means built-in defaults. An invalid file falls back to defaults for
+read-only status reporting, but mutating workflow commands stop and point to
+`/doctor` instead of guessing.
+
+Configuration can make review or verification stricter and can tune local
+branch names and automated-mode limits. It never grants permission to commit,
+merge, push, deploy, publish, send, delete data, waive a failing check, or accept
+a finding. Those approval and safety boundaries are not configurable.
+
+`qualityGates.regular` controls automatic audit, independent-review, check, and
+try-guide behavior for the normal workflow and Autopilot.
+`qualityGates.continuous` controls the same per-feature gates for Continuous
+Mode. The existing `tryGuide` keys select `/check guide`, which generates
+instructions without performing verification or recording acceptance.
+Independent review defaults to `when-sensitive` in both workflows, while
+audit, check, and try guide default to `manual`. Sensitive or unusually broad
+work therefore selects independent review automatically; ordinary small work
+does not. Setting a workflow's independent review to `manual` disables that
+automatic selection, while an explicit `/audit independent current` remains
+available. The other conditional modes are `when-sensitive` for audit,
+`when-behavioral` for check, and `when-user-facing` for try guides. `always`
+runs the gate for every work item in that workflow.
+
+`review.independentExecution` controls how a selected independent-review gate
+runs. Its default, `automatic`, uses a fresh isolated reviewer child when the
+active adapter can prove isolation, exact reviewer identity and model, and
+completion. Otherwise it preserves the request and falls back to the manual
+handoff. This setting changes execution only; the quality-gate policy still
+decides whether review is selected.
+The automatic path spawns a generic child through the current runtime and gives
+it the installed project-local Audit skill and review contract. It never requires
+or discovers global agent roles, skills, prompts, or TraversyFlow components.
+New review requests record requested execution and completed receipts record
+actual execution. Manual uses `fresh session`; automatic uses `fresh subagent`;
+an explicit automatic fallback records actual manual with `fresh session`.
+
+New projects default to one review packet after all small implementation steps
+(`workflow.stepReview: "feature"`) with step checkpoint commits disabled. This
+keeps the normal loop reviewable without repeating the full session context after
+every step. Set `stepReview` to `every` when teaching, pairing closely, or working
+on a high-risk change. That restores the per-step approval pauses. To fully
+restore the previous workflow, including optional checkpoint prompts after an
+approved step, also set `checkpointCommits` to `enabled`. Onboarding presents
+these pairs as Efficient and Guided choices, but stores only the two low-level
+settings. They can be changed at any time. Both styles end with an optional
+read-only code walkthrough. Review cadence controls approval pauses, not whether
+the user can ask for an explanation of the finished implementation.
+
+## Workflow
+
+Build one feature, fix, or rollback at a time, behind review gates. Each step's instructions
+are plain markdown skills any capable agent can read and follow. The workflow is
+exposed through tool-specific adapters:
+
+- Codex: `.agents/skills/<skill>/SKILL.md`
+- Claude Code: `.claude/skills/<skill>/SKILL.md`
+- GitHub Copilot: `AGENTS.md` plus `.agents/skills/<skill>/SKILL.md`
+- OpenCode: `AGENTS.md` plus the compatible `.agents/skills/` or
+  `.claude/skills/` tree already installed for the selected tools
+
+Unused adapters can be removed. Codex, GitHub Copilot, and OpenCode can share
+`.agents/`. OpenCode can also reuse `.claude/` when Claude Code is selected.
+Codex-only, Copilot-only, or OpenCode-only projects can delete `CLAUDE.md` and
+`.claude/`. Claude Code-only projects can delete `.agents/`, but should keep
+`AGENTS.md` because `CLAUDE.md` imports it. Do not duplicate the same Blueprint
+skills under `.opencode/skills/`; OpenCode already discovers the compatible
+trees.
+
+When changing shared workflow behavior, update the matching skill in both
+adapter folders so Codex, Claude Code, GitHub Copilot, and OpenCode stay aligned.
+
+Learn the feature loop: `/feature` -> `/implement` -> `/check` -> `/audit current` ->
+`/complete`. Approve the Feature spec before Implement. Check proves behavior;
+Audit reviews code and records findings. Showing both in this path does not
+change configured gates or make Audit mandatory. `/check guide` only generates
+manual instructions and never performs verification or records acceptance.
+
+Core skills:
+
+### Build
+
+- `feature` - turn a build-plan item into a spec, or propose a reviewed plan addition for a genuinely new feature
+- `implement` - build the current spec one small, reviewed step at a time
+- `check` - prove the current spec against the running app, or use `check guide`
+  for a read-only manual review guide: where to go, what to click, what to expect
+- `complete` - run the final safety pass, log features, fixes, or rollbacks under `blueprint/history/`, then merge with approval
+
+### Understand and review
+
+- `explore` - investigate an idea against the actual code without writing files or requiring plans
+- `brief` - read-only briefing on an upcoming build-plan feature (scope, dependencies, size) before you spec it
+- `status` - read-only progress summary, workflow drift warning, and suggested next action
+- `debug` - reproduce and isolate a failure without editing code, then hand the evidence to `fix` or `implement`
+- `audit` - branch-aware or full-project review across all concerns or a focused quality, security, performance, or tests lens; `audit independent current` prepares an immutable checkpoint for a fresh reviewer session or configured isolated reviewer child; records findings in `blueprint/context/findings.md` and independent receipts in `blueprint/context/review.md`, where blocking findings or stale review state stop `complete`
+- `doctor` - Blueprint health check for setup, adapters, plans, overview freshness, dashboard state, and workflow drift; it may offer to reset only malformed generated dashboard state after approval
+
+### Plan and set up
+
+- `onboard` - tune commands, standards, visibility, ignore rules, and tool adapters after overlaying the Blueprint onto a freshly scaffolded or early project
+- `adopt` - bootstrap the Blueprint into an existing brownfield app with shipped features
+- `discovery` - optional deep, multi-turn planning conversation that drafts the two user-owned plans only after review and approval; direct plan writing remains fully supported
+- `overview` - distill the two planning docs into
+  `blueprint/context/project-overview.md`, then offer a reviewed initial planning
+  baseline commit before Feature 1
+- `prototype` - optional, pre-build static mockups to lock the look
+- `tests` - set up unit testing by default, or a repeatable browser harness with `tests browser`
+- `ci` - explicitly set up one project-specific Verify command and matching automatic GitHub checks, with an optional local pre-push hook
+
+### Recover and release
+
+- `fix` - document an ad-hoc bug or change into `blueprint/context/current-feature.md`
+- `rollback` - plan a safe reversal of a completed feature from its archive and exact git commit, with later-dependency review before code changes
+- `release` - optional Render or Vercel deployment readiness, local config, env review, and smoke-test planning
+
+In Codex, invoke these as skills (`$onboard`, `$discovery`, `$overview`, `$feature`,
+`$implement`, and so on) or ask naturally, such as "run the overview." In Claude
+Code, use the slash commands (`/onboard`, `/discovery`, `/overview`, `/feature`,
+and so on). These are AI chat commands, not terminal commands. In OpenCode or
+other tools without a dedicated invocation syntax, ask the agent to run the matching skill or follow its `SKILL.md` manually. The
+conventions in `blueprint/context/` apply however a step is invoked. `/discovery`
+is never required: users may write detailed plans directly or develop them
+through any conversation before running `/overview`.
+
+### Automation
+
+Optional explicit-only skill: `autopilot` combines `feature` or `fix` with
+`implement` in one bounded pass when directly invoked, including the configured
+regular quality gates. The normal workflow stops for human approval of the spec
+before implementation; Autopilot continues through that review point. It may
+create checkpoint commits on the feature or fix branch after passing steps and
+repair confirmed P0/P1 findings when its audit gate runs. It stops before
+`/complete`, merge, push, deploy, or destructive actions.
+
+Optional explicit-only skill: `continuous` can resume or select the next planned
+feature and repeat the complete local feature lifecycle through the configured
+limit or end of the build plan. It creates one branch and one local main commit
+per feature, applies the Continuous quality gates, archives and merges serially,
+and stops on decisions or failed safety gates. It never pushes, deploys,
+publishes, sends, or performs destructive actions.
+
+Deployment is also explicit. `/release` can prepare local Render or Vercel config
+and run readiness checks, but it must stop before deploy, remote service changes,
+push, or publish unless the user gives a separate yes in the current chat.
+
+## Dashboard activity
+
+The dashboard can show the active or most recent substantial Blueprint command
+from `blueprint/.state/run.json`. This file is generated local state, ignored by
+Git, and never part of a feature commit.
+
+Commands with meaningful progress or a durable handoff should write it when the
+state directory exists: `onboard`, `adopt`, `discovery`, `overview`, `feature`,
+`fix`, `rollback`, `implement`, `debug`, `check`, `audit`, `tests`,
+`ci`, `prototype`, `autopilot`, `continuous`, `complete`, and
+`release`. Short orientation commands such as `explore`, `brief`, `status`, and `doctor`
+do not write activity state. The `check guide` mode also never writes activity
+state; select the Check mode before any activity call. Doctor's optional
+approved reset removes malformed activity instead of recording another run.
+
+Writing the initial activity record is the first action of a tracked command,
+before project inspection, preflight, or other tool calls. This one generated
+state write does not authorize product changes or bypass any safety check.
+
+Never create or edit `run.json` directly. From the project root, use the first
+helper that exists:
+
+```text
+node .agents/skills/doctor/scripts/run-state.mjs <action> <options>
+node .claude/skills/doctor/scripts/run-state.mjs <action> <options>
 ```
-app/                     # Expo Router route files — THIN. Import from src/screens; no business logic here.
-src/
-  screens/                # actual screen implementations, one folder per screen/flow
-  components/ui/          # design-system primitives — screens compose only from these, no ad hoc styling
-  components/navigation/  # nav-specific components (FAB, custom tab bar bits)
-  theme/                  # design tokens: colors, typography, spacing, fonts — plain constants, no ThemeProvider
-  db/                     # expo-sqlite: schema, seed data, typed query helpers
-  storage/                # AsyncStorage wrapper — flat preference flags ONLY (see Offline-First Rules)
-  context/                # React Context providers (Profile, app-ready gate)
-  i18n/                   # en.ts / pcm.ts dictionaries + LanguageProvider
-  utils/                  # small hand-rolled helpers (e.g. relativeTime) instead of pulling in a library
+
+Start with `start --command <skill> --summary <truthful-summary> --boundary
+<boundary>`. Use `update` at meaningful milestones or for a blocker, with
+`--status blocked` and `--resume <exact-command>` when recovery is needed. End
+with `finish --status ready|completed --summary <truthful-summary>`. The helper
+validates every field before atomically replacing the generated file. If it is
+missing or fails, report the activity warning and continue the workflow without
+writing a manual fallback.
+
+The helper writes this schema:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "continuous",
+  "status": "running",
+  "summary": "Completing the remaining build plan",
+  "detail": "Implementing feature 3.",
+  "boundary": "local-only",
+  "startedAt": "<ISO-8601 timestamp>",
+  "updatedAt": "<ISO-8601 timestamp>",
+  "resumeCommand": "/continuous resume",
+  "progress": { "current": 2, "total": 5, "label": "features" },
+  "feature": { "id": "3", "title": "Export reports" }
+}
 ```
 
-New code should slot into this structure. Don't invent a parallel structure for "just this one feature."
+`status` must be `running`, `blocked`, `ready`, or `completed`. Use `ready` when
+the command reached its intended review handoff, such as Autopilot waiting for
+review before `/complete`. Use `blocked` with the exact recovery command when
+work can resume. `boundary` must be `read-only`, `reviewed`, or `local-only`.
+The progress, feature, detail, boundary, and resume fields are optional. Never
+put secrets, raw logs, prompts, or user content in this file. Activity tracking
+must not change a command's approval boundaries or turn a reporting failure into
+a workflow failure.
 
-## Coding Standards
+## Automatic verification
 
-- **TypeScript strict mode is on — keep it clean.** `npx tsc --noEmit -p .` must report zero errors before any commit. This is the fastest, cheapest correctness check available in this project; never skip it.
-- Components are function components with named exports (`export function ScreenName()`), not default-export-only files, except the thin `app/**` route files which re-export a screen as default (required by Expo Router).
-- Every screen renders text through `AppText` (never raw RN `Text`) and composes only from `src/components/ui` primitives, so the Civic Green design system (colors, Zilla Slab/Work Sans typography, the dual-radius shape system) stays consistent without each screen reinventing styles.
-- Style with `StyleSheet.create` co-located in the same file as the component. No inline style objects for anything beyond a one-off dynamic value.
-- All user-facing copy goes through `t('key')` from `useTranslation()` — never a hardcoded English string in a screen. Add the key to both `src/i18n/en.ts` (required) and `pcm.ts` (best-effort; missing Pidgin keys fall back to English automatically, so partial coverage is fine, but never skip `en.ts`).
-- Path alias `@/*` maps to `src/*` — use it instead of relative `../../../` chains.
+Automatic GitHub checks are a separate explicit setup. `/onboard` and `/adopt`
+only report existing checks and point to `/ci` or `$ci` when none exist. Running
+`/ci` inspects the real project and defines one `Verify` command from checks that
+already exist. Use this order when available: typecheck, tests, then build. Never
+invent a test runner or another check just to fill the command.
 
-## Offline-First Rules
+For JavaScript and TypeScript projects, prefer a package script such as `verify`
+and use the detected package manager. For other stacks, use the native task
+runner or exact combined command. Record the exact command under Commands below.
 
-- **SQLite (`expo-sqlite`, via `src/db`) is for structured/queryable content**: topics, Q&A entries, saved bookmarks, recently-viewed activity. This includes bundled seed content, not just user data — the point is that Home/Ask/Topic screens query it the same way real fetched content would be queried later, so a future real backend can slot in without changing the read path.
-- **AsyncStorage (`src/storage`) is for flat preference flags only**: language, onboarding-seen, the mock profile blob. If you catch yourself storing a list you need to filter/sort/join, it belongs in SQLite, not AsyncStorage.
-- Recently-viewed is a capped, recency-evicted table (see `RECENTLY_VIEWED_CAP` in `src/db/queries.ts`) — offline caching means "the last ~30 things the user actually opened," not an ever-growing store or a full pre-bundled library.
-- Any screen showing possibly-stale content must distinguish **"offline, showing saved content"** from **"offline, never viewed before"** — these are different states with different copy (see `OfflineBanner`'s `variant` prop). Never show a "saved" claim for content that was never actually cached.
-- Check connectivity via `@react-native-community/netinfo`, not by inferring it from a failed fetch (there are no live fetches yet, but this rule holds once a real API is added).
+The optional `.github/workflows/verify.yml` must run that same command for pull
+requests and pushes to the default branch. Preserve existing workflows, use the
+project's real runtime and install command, and grant only `contents: read` by
+default. This setup does not add coverage, browser tests, security scans, or
+version matrices; those remain later project choices. A local pre-push hook that
+runs the same `Verify` command is offered as an opt-in at the end of `/ci`, and
+`git push --no-verify` still bypasses it, so the remote ruleset stays the lock.
 
-## Keeping It Very Light — Dependency & Bundle Rules
+GitHub branch protection or a ruleset can require the check after the repository
+is pushed, but that is a separate remote setting. Missing automatic GitHub
+checks do not make the Blueprint unusable.
 
-- **Package manager is pnpm, always.** Never `npm install` / `yarn add`. Use `npx expo install <pkg>` for anything touching native code (it pins SDK-compatible versions); use `pnpm add` only for pure-JS dev tooling. `.npmrc`'s `node-linker=hoisted` must stay — it's required for Metro to resolve pnpm's non-flat `node_modules` correctly.
-- **Deep-import from icon/font packages — never import from a package's barrel `index.js`.** `@expo/vector-icons` and `@expo-google-fonts/*` barrels unconditionally `require()` every file they re-export at module-eval time; Metro does not tree-shake this. A single `import { Ionicons } from '@expo/vector-icons'` silently bundled ~4MB of unused icon fonts (all 15 icon families) until this was caught and fixed. Always write:
-  ```ts
-  import Ionicons from '@expo/vector-icons/Ionicons';
-  import { WorkSans_600SemiBold } from '@expo-google-fonts/work-sans/600SemiBold';
-  ```
-  When adding a new icon set or font weight, this rule still applies — check the package's actual export shape (default vs named) before importing.
-- **Before adding any dependency, ask: does this need a whole library, or a ~15-line hand-rolled helper?** Precedent in this repo: relative-time formatting (`src/utils/relativeTime.ts`) instead of moment/date-fns; i18n is a hand-rolled `t()`/Context instead of i18next, since 2 languages with no plurals/RTL doesn't need it.
-- **Explicitly avoid** unless a real requirement forces it and it's discussed first: Redux/MobX/Recoil (Context + hooks is the standard here), full UI kits (react-native-paper, NativeBase, gluestack — they fight the custom Civic Green theming), Lottie (Reanimated primitives cover our animation needs), MMKV (native-module friction with Expo Go; AsyncStorage/SQLite already cover the storage needs), any heavy date/state/network library.
-- **No raster illustration assets.** Use `@expo/vector-icons` glyphs in tinted circular badges, or small hand-authored `react-native-svg` components, instead of PNG/JPEG illustrations.
-- **Verify bundle-size-affecting changes** with `npx expo export --platform all` and compare `dist/` size before/after (then `rm -rf dist .expo` — export output is gitignored and shouldn't be committed). Do this whenever adding a dependency, a font, or an icon set — not just when asked.
+## Commands
 
-## Accessibility
+- Dev server: `pnpm start`
+- Android: `pnpm android`
+- iOS: `pnpm ios`
+- Web: `pnpm web`
+- Lint: `pnpm lint`
+- Type check: `pnpm exec tsc --noEmit -p .`
 
-- Touch targets: minimum 44×44 — this is enforced centrally in `Button`, `IconButton`, and other interactive primitives. Don't add a bare `Pressable` around a small icon without checking it clears this.
-- `accessibilityRole` / `accessibilityLabel` on every interactive element; trust/safety copy (`Disclaimer`, `OfflineBanner`) uses `accessibilityRole="text"` so screen readers always announce it rather than skip it as decorative.
-- Never disable font scaling (`allowFontScaling={false}` is forbidden). Don't `numberOfLines`-truncate primary answer content — only card titles/previews.
-- Color tokens: only use `colors.textPrimary`/`textSecondary`/`onPrimary` etc. for text; tint colors (`primaryTint`, `secondaryContainer`) are background-only — this is what keeps contrast WCAG-AA safe.
-
-## Expo-Specific Standards
-
-- Stay in the Expo-managed workflow. Don't add a package that forces `expo prebuild`/bare-workflow ejection, or a config plugin, without flagging it first — either usually means losing Expo Go for local dev and needing a custom dev client, which is a real workflow cost.
-- Prefer Expo's own first-party modules (`expo-sqlite`, `expo-font`, `expo-localization`, `expo-image`, `expo-linking`, etc.) over community equivalents — better long-term SDK-upgrade compatibility and Expo Go support.
-- Use Expo Router file-based routing conventions under `app/`; route files stay thin (see Architecture above). Respect `typedRoutes`/`reactCompiler` experiments already enabled in `app.json` — don't disable them to work around a type error, fix the actual typing.
-- Platform-gate anything not supported on web (`Linking.openURL('tel:...')`, native `Share`) behind `Platform.OS !== 'web'` with a sensible fallback — web is a first-class target, not an afterthought.
-- Before using any Expo API you're not 100% certain of, check the versioned docs (see top of this file) — SDK behavior changes across versions and training-data knowledge goes stale fast.
-
-## Version Control
-
-**Branching model** (lightweight Git Flow):
-
-| Branch | Purpose | Branches from | Merges to |
-|---|---|---|---|
-| `main` | Always production-ready/releasable. Protected — no direct commits. | — | tagged on every merge |
-| `develop` | Integration branch; default branch for day-to-day work | `main` | `main` (via release) |
-| `feature/<short-name>` | New functionality | `develop` | `develop` |
-| `fix/<short-name>` | Non-urgent bug fixes | `develop` | `develop` |
-| `hotfix/<short-name>` | Urgent production fixes | `main` | `main` **and** `develop` |
-| `release/<x.y.z>` | Stabilization before a release (bug fixes only, no new features) | `develop` | `main` **and** `develop` |
-| `chore/<short-name>`, `docs/<short-name>` | Non-functional maintenance (deps, tooling, docs) | `develop` | `develop` |
-
-Branch names are kebab-case and describe the change, e.g. `feature/voice-input`, `fix/offline-banner-flicker`.
-
-**Commit messages** follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`, types `feat`, `fix`, `perf`, `refactor`, `chore`, `docs`, `test`, `style`, `build`. Body explains *why*, not just what, when the change isn't self-evident from the diff. This is already the convention used throughout this repo's history — keep following it.
-
-**Versioning:** Semantic Versioning (`MAJOR.MINOR.PATCH`), kept in sync between `package.json`'s `version` and `app.json`'s `expo.version`. Tag every merge to `main` as `vX.Y.Z`. Bump `ios.buildNumber` / `android.versionCode` independently per store submission, per platform convention.
-
-**Before opening a PR:**
-- `npx tsc --noEmit -p .` is clean.
-- If the change is observable in the app, it's been run (`expo start --web` at minimum) and walked through, not just typechecked.
-- PR description covers what changed, why, and how it was verified — a reviewer shouldn't have to re-derive intent from the diff alone.
+No test runner, Verify command, browser-test command, or GitHub Actions workflow is configured. Run `/tests` or `$tests` to add tests deliberately, and `/ci` or `$ci` to define Verify and optional GitHub checks.
