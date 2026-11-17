@@ -13,7 +13,8 @@ Shipped work is checked so the next unchecked item represents the real roadmap.
 ## Stage 1 - Real content and Constitution reader completion
 
 - [ ] 6. **Legal content review and English/Pidgin completion** - Replace mock/paraphrased Q&A material with legally reviewed, sourced content and complete the supported content coverage.
-- [ ] 7. **Complete Constitution coverage** - Bundle and search Chapters V, VI, and VII with the same offline reader experience.
+- [ ] 7a. **Chapter V: The Legislature** - Bundle and search sections 47-129 using the Federal Government/NILDS 2023 consolidated Constitution as primary text, with a section-by-section cross-check before release.
+- [ ] 7b. **Chapter VI: The Executive** - Bundle and search sections 130-229 using the Federal Government/NILDS 2023 consolidated Constitution as primary text, with a section-by-section cross-check before release.
 - [ ] 8. **Verify and expand emergency help** - Obtain operations/legal verification for national contacts and add sourced state-specific and mental-health emergency services.
 
 ## Later roadmap
